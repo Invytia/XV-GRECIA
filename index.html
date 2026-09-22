@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Paleta Azul Pastel & Magia */
+            /* Paleta Azul Pastel */
             --gold-editorial: #7BA4C7; 
             --accent-glow: #A8C9E6;
             --text-dark: #1F2D3D;      
@@ -21,14 +21,16 @@
         body, html {
             width: 100%; font-family: 'Montserrat', sans-serif;
             color: var(--text-dark); overflow-x: hidden; scroll-behavior: smooth;
-            background-color: #000; /* Respaldo */
+            background-color: #F4F9FF;
         }
 
-        /* --- FONDOS FIJOS --- */
+        /* --- FONDOS FIJOS SIN DEFORMAR --- */
         #fixed-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('assets/fondo2.jpg') no-repeat center center;
-            background-size: cover; z-index: -1; opacity: 0; transition: opacity 1.5s ease;
+            background: url('assets/fondo2.jpg') top center;
+            background-size: 100% auto; /* Mantiene la proporción al 100% del ancho */
+            background-repeat: repeat;  /* Repite hacia abajo si es necesario sin estirar */
+            z-index: -1; opacity: 0; transition: opacity 1.5s ease;
         }
         body.content-active #fixed-bg { opacity: 1; }
 
@@ -46,7 +48,7 @@
         }
 
         .cloud {
-            position: absolute; background: rgba(255,255,255,0.15); border-radius: 50px;
+            position: absolute; background: rgba(255,255,255,0.3); border-radius: 50px;
             filter: blur(8px); animation: drift 20s infinite linear; pointer-events: none; z-index: 0;
         }
         @keyframes drift {
@@ -65,25 +67,23 @@
         .sticky-music-btn:hover { transform: scale(1.1); background-color: #5d8ab0; }
         .sticky-music-btn svg { width: 18px; height: 18px; fill: #fff; }
 
-        /* --- SOBRE EDITORIAL CON FONDO --- */
+        /* --- SOBRE EDITORIAL CON FONDO LIMPIO --- */
         #envelope-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('assets/fondo.jpg') no-repeat center center; background-size: cover;
+            background: url('assets/fondo.jpg') top center; 
+            background-size: 100% auto; 
+            background-repeat: repeat;
+            background-color: #F4F9FF; /* Color base por si la imagen tarda en cargar */
             z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1.2s ease-in-out, visibility 1.2s;
-        }
-        /* Overlay oscuro para que resalte el sobre si el fondo es muy claro */
-        #envelope-screen::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.4); backdrop-filter: blur(3px); z-index: 1;
         }
         #envelope-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .envelope-text-container {
             text-align: center; margin-bottom: 50px; animation: floatText 4s ease-in-out infinite; position: relative; z-index: 10;
         }
-        .env-tag { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 10px; text-transform: uppercase; color: #333; font-weight: 700; text-shadow: 0 2px 5px rgba(255,255,255,0.8); }
-        .env-title { font-family: 'Pinyon Script', cursive; font-size: 80px; color: var(--gold-editorial); line-height: 1.2; margin-top: 5px; text-shadow: 0 4px 15px rgba(255,255,255,0.9); }
+        .env-tag { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 10px; text-transform: uppercase; color: #1F2D3D; font-weight: 700; text-shadow: 0 2px 5px rgba(255,255,255,0.9); }
+        .env-title { font-family: 'Pinyon Script', cursive; font-size: 80px; color: var(--gold-editorial); line-height: 1.2; margin-top: 5px; text-shadow: 0 4px 15px rgba(255,255,255,1); }
 
         .envelope-wrapper { position: relative; cursor: pointer; transition: transform 0.6s var(--transition-smooth); z-index: 10; }
         .envelope-wrapper:hover { transform: translateY(-8px); }
@@ -112,7 +112,7 @@
         .wax-seal svg { width: 22px; height: 22px; fill: #fff; }
         .envelope-wrapper.open .wax-seal { opacity: 0; transform: translateX(-50%) scale(0.5); pointer-events: none; }
 
-        .hint-text { text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 4px; color: #333; margin-top: 40px; text-shadow: 0 2px 4px rgba(255,255,255,0.8); animation: pulse 2.5s infinite; position: relative; z-index: 10;}
+        .hint-text { text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 4px; color: #1F2D3D; margin-top: 40px; text-shadow: 0 2px 4px rgba(255,255,255,0.9); animation: pulse 2.5s infinite; position: relative; z-index: 10;}
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         @keyframes floatText { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
@@ -133,50 +133,46 @@
         .delay-1 { transition-delay: 0.1s; } .delay-2 { transition-delay: 0.3s; }
         .delay-3 { transition-delay: 0.5s; } .delay-4 { transition-delay: 0.7s; }
 
-        /* Secciones con Glassmorphism para que el fondo se vea */
+        /* Secciones Translúcidas Claras para que luzca la imagen */
         .section-block {
             width: 100%; padding: 110px 20px; display: flex; flex-direction: column; align-items: center; text-align: center;
-            position: relative; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            position: relative; overflow: hidden;
         }
-        .bg-pearl { background-color: rgba(244, 249, 255, 0.75); }
-        .bg-mint { background-color: rgba(225, 238, 250, 0.75); }
-        .bg-pink { background-color: rgba(216, 232, 248, 0.75); }
-        .bg-black { background-color: rgba(26, 37, 47, 0.85); color: #ffffff; }
+        /* Capas muy suaves y blancas (NO oscuras) */
+        .bg-pearl { background-color: rgba(255, 255, 255, 0.4); }
+        .bg-mint { background-color: rgba(255, 255, 255, 0.5); }
+        .bg-pink { background-color: rgba(255, 255, 255, 0.6); }
 
         /* Tipografía Editorial */
-        .tag-line { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 25px; font-weight: 700; }
-        .title-script { font-family: 'Pinyon Script', cursive; font-size: 90px; color: var(--gold-editorial); margin-bottom: 20px; line-height: 1.1; font-weight: 400; text-shadow: 0px 4px 15px rgba(255,255,255,0.5); }
-        .body-serif { font-family: 'Cormorant Garamond', serif; font-size: 26px; line-height: 1.6; color: var(--text-dark); font-style: italic; max-width: 600px; padding: 0 15px; font-weight: 500; }
-        
-        .bg-black .title-script { color: #A8C9E6; }
-        .bg-black .body-serif { color: #E6F0FA; }
+        .tag-line { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 25px; font-weight: 700; text-shadow: 0 2px 4px rgba(255,255,255,0.8); }
+        .title-script { font-family: 'Pinyon Script', cursive; font-size: 90px; color: var(--gold-editorial); margin-bottom: 20px; line-height: 1.1; font-weight: 400; text-shadow: 0px 4px 15px rgba(255,255,255,0.9); }
+        .body-serif { font-family: 'Cormorant Garamond', serif; font-size: 26px; line-height: 1.6; color: var(--text-dark); font-style: italic; max-width: 600px; padding: 0 15px; font-weight: 500; text-shadow: 0 2px 5px rgba(255,255,255,0.8); }
 
         /* Rutas de Vuelo (Divisores Temáticos) */
-        .flight-path { width: 100%; max-width: 300px; height: 2px; border-bottom: 2px dashed var(--gold-editorial); position: relative; margin: 40px auto; opacity: 0.5; }
+        .flight-path { width: 100%; max-width: 300px; height: 2px; border-bottom: 2px dashed var(--gold-editorial); position: relative; margin: 40px auto; opacity: 0.6; }
         .flight-path::after { content: '✈'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 20px; color: var(--gold-editorial); background: transparent; padding: 0 10px; }
         
-        .info-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 12px; font-weight: 700; }
-        .info-data { font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600; line-height: 1.3; }
-        .bg-black .info-data { color: #ffffff; }
+        .info-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 12px; font-weight: 700; text-shadow: 0 2px 4px rgba(255,255,255,0.8); }
+        .info-data { font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--text-dark); margin-bottom: 5px; font-weight: 700; line-height: 1.3; text-shadow: 0 2px 6px rgba(255,255,255,0.9); }
 
         /* Sello de Pasaporte CSS */
         .passport-stamp {
             position: absolute; top: 10%; right: 5%; width: 120px; height: 120px;
-            border: 4px solid rgba(123, 164, 199, 0.3); border-radius: 50%;
+            border: 4px solid rgba(123, 164, 199, 0.4); border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transform: rotate(15deg); font-family: 'Space Mono', monospace; color: rgba(123, 164, 199, 0.4);
+            transform: rotate(15deg); font-family: 'Space Mono', monospace; color: rgba(123, 164, 199, 0.6);
             font-weight: bold; font-size: 12px; text-transform: uppercase; pointer-events: none; z-index: 0;
         }
-        .passport-stamp::before { content: 'APPROVED'; font-size: 16px; letter-spacing: 2px; border-top: 1px solid rgba(123,164,199,0.3); border-bottom: 1px solid rgba(123,164,199,0.3); padding: 5px 0; margin-top: 5px; }
+        .passport-stamp::before { content: 'APPROVED'; font-size: 16px; letter-spacing: 2px; border-top: 1px solid rgba(123,164,199,0.4); border-bottom: 1px solid rgba(123,164,199,0.4); padding: 5px 0; margin-top: 5px; }
 
         /* CUENTA REGRESIVA ESTILO AEROPUERTO */
         .countdown-container {
             display: flex; justify-content: center; gap: 15px; margin: 30px auto; width: 100%; max-width: 400px;
         }
         .time-box {
-            background: rgba(255,255,255,0.6); border: 1px solid rgba(123, 164, 199, 0.3);
+            background: rgba(255,255,255,0.85); border: 1px solid rgba(123, 164, 199, 0.3);
             border-radius: 8px; padding: 15px 10px; width: 75px; display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 10px 20px rgba(123, 164, 199, 0.1); backdrop-filter: blur(5px);
+            box-shadow: 0 10px 20px rgba(123, 164, 199, 0.15); backdrop-filter: blur(5px);
         }
         .time-box span { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--gold-editorial); line-height: 1; }
         .time-box small { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; font-weight: 600; letter-spacing: 1px; }
@@ -191,13 +187,13 @@
         .btn-solid:hover { background-color: #5d8ab0; transform: translateY(-3px); box-shadow: 0 12px 30px rgba(123, 164, 199, 0.5); }
 
         /* Mapas */
-        .map-box { width: 100%; max-width: 550px; height: 320px; margin: 30px auto; overflow: hidden; border-radius: 12px; box-shadow: 0 15px 40px rgba(123,164,199,0.2); position: relative; z-index: 2; border: 4px solid #fff; }
-        .map-box iframe { width: 100%; height: 100%; border: none; filter: grayscale(10%) contrast(1.05); }
+        .map-box { width: 100%; max-width: 550px; height: 320px; margin: 30px auto; overflow: hidden; border-radius: 12px; box-shadow: 0 15px 40px rgba(123,164,199,0.3); position: relative; z-index: 2; border: 4px solid #fff; }
+        .map-box iframe { width: 100%; height: 100%; border: none; }
 
         /* BOLETO DE AVIÓN TEMÁTICO */
         .boarding-pass {
             width: 100%; max-width: 420px; margin: 40px auto; background: rgba(255,255,255,0.95);
-            border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(123,164,199,0.25); text-align: left;
+            border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(123,164,199,0.3); text-align: left;
             border: 1px solid rgba(123,164,199,0.3); backdrop-filter: blur(10px);
         }
         .bp-header { background: var(--gold-editorial); color: #fff; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -208,7 +204,7 @@
         /* Cortes Laterales del Ticket */
         .bp-body::before, .bp-body::after {
             content: ''; position: absolute; bottom: -15px; width: 30px; height: 30px;
-            background-color: var(--pink-subtle); border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #F4F9FF; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
         .bp-body::before { left: -15px; } .bp-body::after { right: -15px; }
         
@@ -232,13 +228,13 @@
         /* Formularios */
         .form-group { width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative; z-index: 2; }
         .input-line {
-            width: 100%; padding: 18px 0; background: rgba(255,255,255,0.5); border: 1px solid rgba(123,164,199,0.3); border-radius: 8px;
+            width: 100%; padding: 18px 0; background: rgba(255,255,255,0.7); border: 1px solid rgba(123,164,199,0.3); border-radius: 8px;
             color: var(--text-dark); font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600; outline: none;
             text-align: center; transition: all 0.4s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .input-line:focus { border-color: var(--gold-editorial); background: rgba(255,255,255,0.9); box-shadow: 0 0 15px rgba(123,164,199,0.2); }
+        .input-line:focus { border-color: var(--gold-editorial); background: rgba(255,255,255,0.95); box-shadow: 0 0 15px rgba(123,164,199,0.2); }
         .input-line::placeholder { color: #8898AA; font-weight: 500; }
-        .input-line:disabled { color: var(--gold-editorial); background-color: rgba(255,255,255,0.7); cursor: not-allowed; }
+        .input-line:disabled { color: var(--gold-editorial); background-color: rgba(255,255,255,0.8); cursor: not-allowed; }
         textarea.input-line { resize: vertical; min-height: 100px; }
         select.input-line { appearance: none; text-align-last: center; cursor: pointer; }
 
@@ -254,7 +250,7 @@
 </head>
 <body>
 
-    <!-- FONDO FIJO -->
+    <!-- FONDO FIJO (SIN DEFORMAR) -->
     <div id="fixed-bg"></div>
 
     <!-- AUDIO OCULTO -->
@@ -351,21 +347,21 @@
         </section>
 
         <!-- Dress Code -->
-        <section class="section-block bg-black">
+        <section class="section-block bg-pearl">
             <div class="magic-dust" id="magic-container-5"></div>
-            <div class="anim-element anim-fade-up delay-1 info-title" style="color: var(--accent-glow);">Dress Code</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-family: 'Cinzel', serif; font-size: 42px; margin: 25px 0; letter-spacing: 6px; color: #fff;">
+            <div class="anim-element anim-fade-up delay-1 info-title">Dress Code</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-family: 'Cinzel', serif; font-size: 42px; margin: 25px 0; letter-spacing: 6px; color: var(--text-dark);">
                 FORMAL
             </div>
-            <div class="flight-path anim-element anim-fade-up delay-3" style="border-color: #334;"></div>
-            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #A8C9E6; font-size: 22px;">
+            <div class="flight-path anim-element anim-fade-up delay-3"></div>
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="font-size: 22px;">
                 Se solicita amablemente asistir con vestimenta formal.<br>
-                <strong style="color: #fff; font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase; display: block; margin-top: 20px; letter-spacing: 2px; padding: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">Por favor evita la paleta de colores azules.</strong>
+                <strong style="color: var(--gold-editorial); font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase; display: block; margin-top: 20px; letter-spacing: 2px; padding: 15px; border: 1px solid rgba(123, 164, 199, 0.4); border-radius: 8px;">Por favor evita la paleta de colores azules.</strong>
             </p>
         </section>
 
         <!-- Mesa de Regalos -->
-        <section class="section-block bg-pearl">
+        <section class="section-block bg-mint">
             <div class="magic-dust" id="magic-container-6"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Mesa de Regalos</div>
             <svg class="anim-element anim-zoom delay-2" viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: var(--gold-editorial); margin: 20px 0; position: relative; z-index: 2;">
@@ -378,7 +374,7 @@
         </section>
 
         <!-- Playlist -->
-        <section class="section-block bg-mint">
+        <section class="section-block bg-pearl">
             <div class="magic-dust" id="magic-container-7"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Música</div>
             <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Nuestra Playlist</div>
@@ -394,7 +390,7 @@
         </section>
 
         <!-- Galería -->
-        <section class="section-block bg-pearl">
+        <section class="section-block bg-mint">
             <div class="magic-dust" id="magic-container-8"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Momentos</div>
             <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Galería en Vivo</div>
@@ -520,7 +516,7 @@
             const distance = eventDate - now;
 
             if (distance < 0) {
-                document.querySelector('.countdown-container').innerHTML = "<div class='info-data' style='color: var(--gold-editorial);'>¡El día ha llegado!</div>";
+                document.querySelector('.countdown-container').innerHTML = "<div class='info-data' style='color: var(--gold-editorial);'>¡El gran día es hoy!</div>";
                 return;
             }
 
