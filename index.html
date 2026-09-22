@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis XV Años - Grecia Renata</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Pinyon+Script&family=Montserrat:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Paleta Azul Pastel & Magia */
+            --bg-pearl: #F4F9FF;       
+            --mint-subtle: #E6F0FA;    
+            --pink-subtle: #D8E8F8;    
+            --gold-editorial: #7BA4C7; /* Azul elegante en lugar del dorado */
+            --accent-glow: #A8C9E6;
+            --text-dark: #2C3E50;      
+            --text-muted: #5D6D7E;
+            --black-theme: #1A252F;
+            
+            --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-pearl);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- DESTELLOS Y MAGIA (Fondo) --- */
+        .magic-dust {
+            position: absolute; width: 100%; height: 100%;
+            top: 0; left: 0; pointer-events: none; z-index: 1; overflow: hidden;
+        }
+        .sparkle {
+            position: absolute; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: floatSparkle 4s infinite ease-in-out;
+            opacity: 0;
+        }
+        @keyframes floatSparkle {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            50% { transform: translateY(-20px) scale(1.2); opacity: 0.8; }
+            100% { transform: translateY(-40px) scale(0.5); opacity: 0; }
+        }
+
+        /* --- REPRODUCTOR DE MÚSICA (STICKY) --- */
+        .sticky-music-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 50px; height: 50px;
+            background-color: var(--gold-editorial);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 10px 25px rgba(123, 164, 199, 0.5);
+            z-index: 2000; cursor: pointer; opacity: 0; visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.6s var(--transition-smooth); border: none; outline: none;
+        }
+        body.content-active .sticky-music-btn { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        .sticky-music-btn:hover { transform: scale(1.1); background-color: #5d8ab0; }
+        .sticky-music-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+        /* --- SOBRE EDITORIAL --- */
+        #envelope-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-pearl); 
+            z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s;
+        }
+        #envelope-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .envelope-text-container {
+            text-align: center; margin-bottom: 50px;
+            animation: floatText 4s ease-in-out infinite; position: relative; z-index: 10;
+        }
+        .env-tag {
+            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 8px;
+            text-transform: uppercase; color: var(--text-muted); font-weight: 500;
+        }
+        .env-title {
+            font-family: 'Pinyon Script', cursive; font-size: 75px;
+            color: var(--gold-editorial); line-height: 1.2; margin-top: 5px;
+            text-shadow: 0 0 15px rgba(123, 164, 199, 0.3);
+        }
+
+        .envelope-wrapper { position: relative; cursor: pointer; transition: transform 0.6s var(--transition-smooth); z-index: 10; }
+        .envelope-wrapper:hover { transform: translateY(-8px); }
+
+        .envelope {
+            position: relative; width: 320px; height: 210px;
+            background-color: #FFFFFF; border-radius: 2px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.03);
+        }
+        .envelope::before {
+            content: ''; position: absolute; top: 0; right: 0;
+            border-right: 160px solid #E6F0FA; border-top: 105px solid transparent; border-bottom: 105px solid #E6F0FA; z-index: 2;
+        }
+        .envelope::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            border-left: 160px solid #D8E8F8; border-top: 105px solid transparent; border-bottom: 105px solid #D8E8F8; z-index: 2;
+        }
+        .front-flap {
+            position: absolute; top: 0; left: 0;
+            border-left: 160px solid transparent; border-right: 160px solid transparent;
+            border-top: 115px solid #C4DAEE; transform-origin: top;
+            transition: transform 0.9s var(--transition-smooth); z-index: 4;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.04));
+        }
+        .envelope-wrapper.open .front-flap { transform: rotateX(180deg); z-index: 1; }
+
+        .wax-seal {
+            position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
+            width: 45px; height: 45px; background-color: var(--gold-editorial);
+            border-radius: 50%; z-index: 5; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(123, 164, 199, 0.4); 
+            transition: opacity 0.5s ease 0.1s, transform 0.5s ease;
+        }
+        .wax-seal svg { width: 22px; height: 22px; fill: #fff; }
+        .envelope-wrapper.open .wax-seal { opacity: 0; transform: translateX(-50%) scale(0.5); pointer-events: none; }
+
+        .hint-text {
+            text-align: center; font-size: 11px; font-weight: 400; text-transform: uppercase; 
+            letter-spacing: 4px; color: var(--text-muted); margin-top: 40px; 
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        @keyframes floatText { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
+
+        /* --- CONTENIDO PRINCIPAL Y ANIMACIONES ESCALONADAS --- */
+        #main-invitation {
+            display: none; width: 100%; flex-direction: column; align-items: center;
+            opacity: 0; animation: fadeInMain 2s forwards 0.3s;
+        }
+        body.content-active #main-invitation { display: flex; }
+        @keyframes fadeInMain { to { opacity: 1; } }
+
+        /* Clases de Animación Mejoradas para más "Magia" */
+        .anim-element { opacity: 0; transition: all 1.5s var(--transition-smooth); position: relative; z-index: 2; }
+        .anim-fade-up { transform: translateY(60px) scale(0.98); }
+        .anim-fade-up.in-view { opacity: 1; transform: translateY(0) scale(1); }
+        
+        .anim-zoom { transform: scale(0.85); opacity: 0; }
+        .anim-zoom.in-view { opacity: 1; transform: scale(1); }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.3s; }
+        .delay-3 { transition-delay: 0.5s; }
+        .delay-4 { transition-delay: 0.7s; }
+
+        /* Estructura de Secciones Minimalistas */
+        .section-block {
+            width: 100%; padding: 110px 20px; display: flex; flex-direction: column; align-items: center; text-align: center;
+            position: relative; overflow: hidden;
+        }
+
+        .bg-pearl { background-color: var(--bg-pearl); }
+        .bg-mint { background-color: var(--mint-subtle); }
+        .bg-pink { background-color: var(--pink-subtle); }
+        .bg-black { background-color: var(--black-theme); color: #ffffff; }
+
+        /* Tipografía Editorial */
+        .tag-line {
+            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px;
+            text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 25px; font-weight: 600;
+        }
+        .title-script {
+            font-family: 'Pinyon Script', cursive; font-size: 85px;
+            color: var(--gold-editorial); margin-bottom: 20px; line-height: 1.1; font-weight: 400;
+            text-shadow: 0px 4px 15px rgba(123, 164, 199, 0.2);
+        }
+        .body-serif {
+            font-family: 'Cormorant Garamond', serif; font-size: 24px;
+            line-height: 1.6; color: var(--text-muted); font-style: italic;
+            max-width: 600px; padding: 0 15px; font-weight: 400;
+        }
+        .bg-black .title-script { color: #A8C9E6; }
+        .bg-black .body-serif { color: #D8E8F8; }
+
+        .line-divider { width: 1px; height: 60px; background-color: var(--gold-editorial); margin: 35px auto; }
+        .line-horizontal { width: 60px; height: 1px; background-color: var(--gold-editorial); margin: 40px auto; }
+
+        /* Imágenes sin bordes toscos */
+        .photo-frame {
+            width: 100%; max-width: 420px; margin: 40px auto;
+            box-shadow: 0 20px 50px rgba(123, 164, 199, 0.15); border-radius: 12px;
+            overflow: hidden; border: 5px solid #FFFFFF; position: relative; z-index: 2;
+        }
+        .bg-black .photo-frame { border-color: #222222; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .photo-frame img { width: 100%; display: block; filter: contrast(1.05) saturate(0.95); transition: transform 0.8s ease; }
+        .photo-frame:hover img { transform: scale(1.05); }
+
+        /* Información Textual */
+        .info-title {
+            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4;
+            text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 12px; font-weight: 600;
+        }
+        .info-data {
+            font-family: 'Cormorant Garamond', serif; font-size: 34px;
+            color: var(--text-dark); margin-bottom: 5px; font-weight: 500; line-height: 1.3;
+        }
+        .bg-black .info-data { color: #ffffff; }
+
+        /* Botones Minimalistas */
+        .btn-solid {
+            display: inline-block; background-color: var(--gold-editorial); color: #fff;
+            padding: 17px 35px; font-family: 'Montserrat', sans-serif; font-size: 12px;
+            font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+            text-decoration: none; border: none; cursor: pointer; border-radius: 30px;
+            transition: all 0.4s ease; margin-top: 30px; position: relative; z-index: 5;
+            box-shadow: 0 8px 20px rgba(123, 164, 199, 0.3);
+        }
+        .btn-solid:hover { background-color: #5d8ab0; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(123, 164, 199, 0.4); }
+
+        /* Calendario Diciembre 2026 */
+        .calendar-wrapper {
+            width: 100%; max-width: 340px; margin: 40px auto; padding: 35px 25px;
+            background: #fff; border-radius: 12px; box-shadow: 0 15px 45px rgba(123,164,199,0.1);
+            box-sizing: border-box; border: 1px solid rgba(123,164,199,0.1); position: relative; z-index: 2;
+        }
+        .calendar-month {
+            font-family: 'Cinzel', serif; font-size: 20px; color: var(--text-dark);
+            text-transform: uppercase; letter-spacing: 4px; margin-bottom: 30px; font-weight: 600;
+        }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; box-sizing: border-box; }
+        .cal-header { font-family: 'Montserrat', sans-serif; font-size: clamp(10px, 3vw, 12px); font-weight: 600; color: var(--gold-editorial); padding-bottom: 12px; }
+        .cal-day { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 4.5vw, 20px); font-weight: 500; color: var(--text-muted); display: flex; justify-content: center; align-items: center; aspect-ratio: 1; }
+        .cal-day.active { background-color: var(--gold-editorial); color: #fff; border-radius: 50%; font-weight: 600; box-shadow: 0 4px 12px rgba(123, 164, 199, 0.4); animation: pulse 2s infinite; }
+
+        /* Mapas */
+        .map-box {
+            width: 100%; max-width: 550px; height: 320px; margin: 30px auto;
+            overflow: hidden; border-radius: 12px; box-shadow: 0 15px 40px rgba(123,164,199,0.15); position: relative; z-index: 2;
+        }
+        .map-box iframe { width: 100%; height: 100%; border: none; filter: grayscale(20%) contrast(1.05) opacity(0.9); }
+
+        /* BOLETO DE AVIÓN (BOARDING PASS) */
+        .boarding-pass {
+            width: 100%; max-width: 400px; margin: 40px auto; background: #fff;
+            border-radius: 16px; overflow: hidden; position: relative;
+            box-shadow: 0 20px 50px rgba(123,164,199,0.15); text-align: left;
+        }
+        .bp-header {
+            background: var(--gold-editorial); color: #fff; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .bp-header-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; }
+        .bp-flight-icon svg { width: 24px; height: 24px; fill: #fff; transform: rotate(45deg); }
+        .bp-body { padding: 30px 25px; border-bottom: 2px dashed rgba(123,164,199,0.3); position: relative; }
+        .bp-body::before, .bp-body::after {
+            content: ''; position: absolute; bottom: -15px; width: 30px; height: 30px;
+            background-color: var(--pink-subtle); border-radius: 50%;
+        }
+        .bp-body::before { left: -15px; } .bp-body::after { right: -15px; }
+        
+        .bp-route { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .bp-code { font-family: 'Cinzel', serif; font-size: 32px; color: var(--text-dark); font-weight: 600; }
+        .bp-plane { color: var(--gold-editorial); font-size: 24px; animation: flyRight 3s infinite linear; }
+        @keyframes flyRight { 0% { transform: translateX(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(10px); opacity: 0; } }
+        
+        .bp-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .bp-label { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
+        .bp-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--text-dark); font-weight: 600; line-height: 1.1; }
+        
+        .bp-footer { padding: 20px; text-align: center; background: #fafbfc; }
+        .bp-barcode {
+            width: 80%; height: 40px; margin: 0 auto 10px auto;
+            background: repeating-linear-gradient(90deg, var(--text-dark), var(--text-dark) 2px, transparent 2px, transparent 4px, var(--text-dark) 4px, var(--text-dark) 5px, transparent 5px, transparent 8px);
+            opacity: 0.7;
+        }
+
+        /* Formularios */
+        .form-group { width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative; z-index: 2; }
+        .input-line {
+            width: 100%; padding: 18px 0; background: transparent; border: none;
+            border-bottom: 1px solid rgba(123,164,199,0.3); color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 500; outline: none;
+            text-align: center; transition: border-color 0.4s;
+        }
+        .input-line:focus { border-bottom-color: var(--gold-editorial); }
+        .input-line::placeholder { color: #A0A0A0; font-weight: 400; }
+        .input-line:disabled { color: var(--gold-editorial); background-color: rgba(255,255,255,0.4); cursor: not-allowed; }
+        textarea.input-line { resize: vertical; min-height: 90px; }
+        select.input-line { appearance: none; text-align-last: center; cursor: pointer; }
+
+        @media (max-width: 400px) {
+            .env-title { font-size: 60px; }
+            .title-script { font-size: 65px; }
+            .section-block { padding: 80px 15px; }
+            .info-data { font-size: 28px; }
+            .map-box { height: 260px; }
+            .envelope { width: 300px; height: 195px; }
+            .envelope::before, .envelope::after { border-left-width: 150px; border-right-width: 150px; border-top-width: 97px; border-bottom-width: 97px; }
+            .front-flap { border-left-width: 150px; border-right-width: 150px; border-top-width: 105px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO OCULTO -->
+    <audio id="bg-music" src="assets/song.mp3" loop></audio>
+
+    <!-- BOTÓN STICKY DE MÚSICA -->
+    <button id="music-btn" class="sticky-music-btn" onclick="toggleMusic()" aria-label="Controlar música">
+        <svg id="music-icon-play" style="display:none;" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="music-icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+
+    <!-- PANTALLA INICIAL DEL SOBRE -->
+    <div id="envelope-screen">
+        <div class="envelope-text-container">
+            <div class="env-tag">Mis XV Años</div>
+            <h1 class="env-title">Grecia Renata</h1>
+        </div>
+
+        <div class="envelope-wrapper" onclick="openEnvelope()">
+            <div class="front-flap"></div>
+            <div class="wax-seal">
+                <!-- Icono de Avión en el sello -->
+                <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+            </div>
+            <div class="envelope"></div>
+        </div>
+        <div class="hint-text" style="position: relative; z-index: 10;">Tocar para iniciar el vuelo</div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main id="main-invitation">
+        
+        <!-- Portada -->
+        <section class="section-block bg-pearl">
+            <!-- Partículas Mágicas -->
+            <div class="magic-dust" id="magic-container-1"></div>
+
+            <div class="anim-element anim-fade-up delay-1 tag-line">Mis XV Años</div>
+            <h1 class="anim-element anim-zoom delay-2 title-script">Grecia Renata</h1>
+            <div class="anim-element anim-fade-up delay-3 line-divider"></div>
+            <p class="anim-element anim-fade-up delay-4 body-serif">
+                "La vida es un camino lleno de luces, y mis 15 serán una de las más brillantes."
+            </p>
+            <div class="anim-element anim-fade-up delay-4 photo-frame">
+                <img src="assets/foto1.jpg" alt="Grecia Renata" onerror="this.style.display='none'">
+            </div>
+        </section>
+
+        <!-- Fecha y Calendario -->
+        <section class="section-block bg-mint">
+            <div class="magic-dust" id="magic-container-2"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Nuestro Vuelo Despega el</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 40px;">26 de Diciembre</div>
+            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 24px; color: var(--gold-editorial); letter-spacing: 2px;">2026</div>
+
+            <div class="anim-element anim-zoom delay-4 calendar-wrapper">
+                <div class="calendar-month">Diciembre</div>
+                <div class="calendar-grid">
+                    <div class="cal-header">D</div><div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">M</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div>
+                    <!-- 1 de Diciembre 2026 es Martes -->
+                    <div></div><div></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+                    <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div>
+                    <div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
+                    <div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day active">26</div>
+                    <div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div><div></div><div></div>
+                </div>
+            </div>
+
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+de+Grecia+Renata&dates=20261226T230000Z/20261227T070000Z&details=Celebremos+juntos+este+d%C3%ADa+tan+especial" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agendar Vuelo</a>
+        </section>
+
+        <!-- Familia -->
+        <section class="section-block bg-pearl">
+            <div class="magic-dust" id="magic-container-3"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Con el amor de mis padres</div>
+            <div class="anim-element anim-fade-up delay-2 info-data">Jessica</div>
+            <div class="anim-element anim-fade-up delay-3" style="font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold-editorial); margin: 10px 0;">&</div>
+            <div class="anim-element anim-fade-up delay-3 info-data">Gustavo</div>
+            
+            <div class="anim-element anim-zoom delay-4 line-horizontal"></div>
+            
+            <div class="anim-element anim-fade-up delay-4 info-title">Y mis Padrinos</div>
+            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 28px;">Teresa y Abraham</div>
+
+            <div class="anim-element anim-fade-up delay-4 photo-frame" style="margin-top: 70px;">
+                <img src="assets/foto2.jpg" alt="Familia" onerror="this.style.display='none'">
+            </div>
+        </section>
+
+        <!-- Recepción (Destino) -->
+        <section class="section-block bg-pink">
+            <div class="magic-dust" id="magic-container-4"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Destino de Recepción</div>
+            <div class="anim-element anim-fade-up delay-2 info-data">El Patio de Martha</div>
+            <div class="anim-element anim-fade-up delay-3 tag-line" style="font-size: 14px; margin: 15px 0; color: var(--text-muted);">Metepec • 7:00 p.m.</div>
+            
+            <div class="anim-element anim-zoom delay-4 map-box">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.69096152234!2d-99.5635636!3d19.2522957!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85cd8b3c26ba2b6d%3A0x3ae16aeea585ae2b!2sEl%20Patio%20de%20Martha%20Metepec!5e0!3m2!1ses-419!2smx!4v1790038951268!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+            <a href="https://maps.app.goo.gl/Grnv3aSUJsvieCKi7?g_st=ic" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Ver Ubicación</a>
+        </section>
+
+        <!-- Dress Code -->
+        <section class="section-block bg-black">
+            <div class="magic-dust" id="magic-container-5"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title" style="color: var(--accent-glow);">Dress Code</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-family: 'Cinzel', serif; font-size: 40px; margin: 25px 0; letter-spacing: 5px; color: #fff;">
+                FORMAL
+            </div>
+            <div class="anim-element anim-fade-up delay-3 line-divider" style="background-color: #334; height: 40px;"></div>
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #A8C9E6; font-size: 20px;">
+                Se solicita amablemente asistir con vestimenta formal.<br>
+                <strong style="color: #fff; font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase; display: block; margin-top: 15px; letter-spacing: 2px;">Por favor evita la paleta de colores azules.</strong>
+            </p>
+        </section>
+
+        <!-- Mesa de Regalos -->
+        <section class="section-block bg-pearl">
+            <div class="magic-dust" id="magic-container-6"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Mesa de Regalos</div>
+            <svg class="anim-element anim-zoom delay-2" viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: var(--gold-editorial); margin: 20px 0; position: relative; z-index: 2;">
+                <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 34px;">Lluvia de Sobres</div>
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="margin-top: 20px; font-size: 20px;">
+                El obsequio más hermoso es tu presencia. Si deseas tener un detalle adicional, habrá un buzón en la recepción para tu obsequio.
+            </p>
+        </section>
+
+        <!-- Playlist -->
+        <section class="section-block bg-mint">
+            <div class="magic-dust" id="magic-container-7"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Música a Bordo</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Nuestra Playlist</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 20px auto 40px auto; font-size: 20px;">
+                Ayúdame a crear el ambiente perfecto agregando tus canciones favoritas para la pista de baile.
+            </p>
+            
+            <div class="anim-element anim-zoom delay-4" style="width: 100%; max-width: 480px; position: relative; z-index: 2;">
+                <iframe data-testid="embed-iframe" style="border-radius:12px; box-shadow: 0 15px 40px rgba(123,164,199,0.15);" src="https://open.spotify.com/embed/playlist/6KIEfTmTw2kdgbBrmICgG2?utm_source=generator&si=7d1950f7bc244baf" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+            
+            <a href="https://open.spotify.com/playlist/6KIEfTmTw2kdgbBrmICgG2?si=b7eb8ee7c72147ac&pt=80c3fff350d759c40465b0b1528cb0f3" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agregar Canciones</a>
+        </section>
+
+        <!-- Galería -->
+        <section class="section-block bg-pearl">
+            <div class="magic-dust" id="magic-container-8"></div>
+            <div class="anim-element anim-fade-up delay-1 info-title">Momentos</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Galería en Vivo</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 25px auto; font-size: 20px;">
+                Captura la magia de esta noche. Comparte todas las fotos y videos que tomes directamente en nuestro álbum digital.
+            </p>
+            <a href="https://drive.google.com/drive/folders/1rfk1XNECEZZjJb5x6Y0gmFEgtP4I9SfG?usp=sharing" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Subir mis Fotos</a>
+        </section>
+
+        <!-- RSVP & Boleto (Vuelo) -->
+        <section class="section-block bg-pink">
+            <div class="magic-dust" id="magic-container-9"></div>
+            
+            <!-- Boleto de Avión Dinámico -->
+            <div id="pases-section" style="display: none; width: 100%;">
+                <div class="anim-element anim-fade-up delay-1 info-title">Tu Pase de Abordar</div>
+                
+                <div class="anim-element anim-zoom delay-2 boarding-pass">
+                    <div class="bp-header">
+                        <div class="bp-header-title">XV AIRLINES</div>
+                        <div class="bp-flight-icon"><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></div>
+                    </div>
+                    <div class="bp-body">
+                        <div class="bp-route">
+                            <div class="bp-code">MTP</div>
+                            <div class="bp-plane">✈</div>
+                            <div class="bp-code">XVG</div>
+                        </div>
+                        <div class="bp-details" style="margin-bottom: 15px;">
+                            <div>
+                                <div class="bp-label">Pasajero</div>
+                                <div class="bp-value" id="ticket-name">Invitado Especial</div>
+                            </div>
+                        </div>
+                        <div class="bp-details">
+                            <div>
+                                <div class="bp-label">Vuelo</div>
+                                <div class="bp-value">GR-2612</div>
+                            </div>
+                            <div>
+                                <div class="bp-label">Asientos Permitidos</div>
+                                <div class="bp-value" id="ticket-count" style="color: var(--gold-editorial); font-size: 28px;">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bp-footer">
+                        <div class="bp-barcode"></div>
+                        <div class="bp-label">Presentar al abordar</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario RSVP -->
+            <div class="anim-element anim-fade-up delay-1 info-title" style="margin-top: 40px;">Check-In</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Confirmar Asistencia</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 15px auto 35px auto; font-size: 20px;">
+                Agradeceremos tu confirmación lo antes posible para asegurar tu lugar en este vuelo.
+            </p>
+
+            <div class="anim-element anim-fade-up delay-4 form-group">
+                <input type="text" id="rsvp-name" class="input-line" placeholder="Tu nombre y apellido">
+            </div>
+            <div class="anim-element anim-fade-up delay-4 form-group">
+                <select id="rsvp-status" class="input-line">
+                    <option value="" disabled selected>¿Abordarás con nosotros?</option>
+                    <option value="yes">Con gusto asistiré</option>
+                    <option value="no">No me será posible asistir</option>
+                </select>
+            </div>
+            
+            <div class="anim-element anim-fade-up delay-4 form-group">
+                <select id="rsvp-guests" class="input-line" style="display: none;">
+                    <option value="" disabled selected>¿Cuántas personas asisten?</option>
+                </select>
+            </div>
+            
+            <button onclick="sendRSVP()" class="anim-element anim-fade-up delay-4 btn-solid" style="margin-bottom: 70px;">Confirmar por WhatsApp</button>
+
+            <div class="anim-element anim-zoom line-divider"></div>
+
+            <!-- Muro de Deseos -->
+            <div class="anim-element anim-fade-up delay-1 info-title">Mensajes</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Libro de Vuelo</div>
+            <div class="anim-element anim-fade-up delay-3 form-group" style="margin-top: 30px;">
+                <input type="text" id="wish-name" class="input-line" placeholder="De parte de...">
+            </div>
+            <div class="anim-element anim-fade-up delay-4 form-group">
+                <textarea id="wish-message" class="input-line" placeholder="Deja un lindo mensaje para Grecia Renata..."></textarea>
+            </div>
+            <button onclick="sendWish()" class="anim-element anim-fade-up delay-4 btn-solid" style="margin-bottom: 40px;">Enviar Mensaje</button>
+        </section>
+
+    </main>
+
+    <script>
+        // --- EFECTOS DE MAGIA (Polvo Mágico) ---
+        function createMagicDust() {
+            const containers = document.querySelectorAll('.magic-dust');
+            containers.forEach(container => {
+                const numSparkles = Math.floor(Math.random() * 8) + 5; // 5 a 12 estrellas por sección
+                for (let i = 0; i < numSparkles; i++) {
+                    let sparkle = document.createElement('div');
+                    sparkle.classList.add('sparkle');
+                    // Tamaño random
+                    let size = Math.random() * 4 + 2;
+                    sparkle.style.width = `${size}px`;
+                    sparkle.style.height = `${size}px`;
+                    // Posición random
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.top = `${Math.random() * 100}%`;
+                    // Delay y duración random
+                    sparkle.style.animationDelay = `${Math.random() * 4}s`;
+                    sparkle.style.animationDuration = `${Math.random() * 3 + 3}s`;
+                    container.appendChild(sparkle);
+                }
+            });
+        }
+        createMagicDust();
+
+        // --- CONTROL DE AUDIO ---
+        let isMusicPlaying = false;
+        const bgMusic = document.getElementById('bg-music');
+        const playIcon = document.getElementById('music-icon-play');
+        const pauseIcon = document.getElementById('music-icon-pause');
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            } else {
+                bgMusic.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // --- ANIMACIÓN INICIAL DEL SOBRE ---
+        function openEnvelope() {
+            const wrapper = document.querySelector('.envelope-wrapper');
+            const screen = document.getElementById('envelope-screen');
+            wrapper.classList.add('open');
+            
+            setTimeout(() => {
+                screen.classList.add('fade-out');
+                document.body.classList.add('content-active');
+                
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                }).catch(e => {
+                    console.log("El navegador bloqueó el autoplay de audio.");
+                    isMusicPlaying = false;
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                });
+            }, 1000);
+        }
+
+        // --- INTERSECTION OBSERVER (Animaciones On-Scroll) ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            document.querySelectorAll('.anim-element').forEach(el => observer.observe(el));
+        });
+
+        // --- LÓGICA DEL SISTEMA DE PASES Y WHATSAPP ---
+        let pasesAsignados = 0;
+        let nombreInvitado = "Invitado Especial";
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // El número proporcionado para este cliente
+        const currentPhoneNumber = "527225461495"; 
+
+        // Base de datos de ejemplo (puedes mantener la lógica del ID si la requieres en el futuro)
+        const dbInvitados = {
+            "1": { nombre: "Familia Ejemplo", pases: 4 },
+        };
+
+        let parametroId = urlParams.get('id');
+        let parametroPases = urlParams.get('p') || urlParams.get('pases');
+
+        if (parametroId && dbInvitados[parametroId]) {
+            pasesAsignados = dbInvitados[parametroId].pases;
+            nombreInvitado = dbInvitados[parametroId].nombre;
+            const inputName = document.getElementById("rsvp-name");
+            inputName.value = nombreInvitado;
+            inputName.disabled = true;
+        } else if (parametroPases && !isNaN(parametroPases)) {
+            pasesAsignados = parseInt(parametroPases);
+        } else {
+            pasesAsignados = 10; // Fallback
+        }
+
+        // Mostrar boleto de avión si hay pases
+        if (pasesAsignados > 0 && (parametroId || parametroPases)) {
+            const pasesSection = document.getElementById('pases-section');
+            if (pasesSection) {
+                pasesSection.style.display = 'block';
+                document.getElementById('ticket-count').innerText = pasesAsignados;
+                const nameEl = document.getElementById('ticket-name');
+                if (nameEl) nameEl.innerText = nombreInvitado;
+            }
+        }
+
+        // Dropdown de invitados dinámico
+        const rsvpStatus = document.getElementById("rsvp-status");
+        const rsvpGuests = document.getElementById("rsvp-guests");
+
+        rsvpStatus.addEventListener('change', (e) => {
+            if(e.target.value === 'yes') {
+                rsvpGuests.style.display = 'block';
+                rsvpGuests.innerHTML = '<option value="" disabled selected>¿Cuántas personas asisten?</option>';
+                for(let i = 1; i <= pasesAsignados; i++) {
+                    rsvpGuests.innerHTML += `<option value="${i}">${i} pasajero${i > 1 ? 's' : ''}</option>`;
+                }
+            } else {
+                rsvpGuests.style.display = 'none';
+                rsvpGuests.value = "";
+            }
+        });
+
+        // --- ENVÍO DE ASISTENCIA A WHATSAPP ---
+        function sendRSVP() {
+            const name = document.getElementById("rsvp-name").value.trim();
+            const status = document.getElementById("rsvp-status").value;
+            const guests = document.getElementById("rsvp-guests").value;
+            
+            if (name === "" || status === "") {
+                alert("Por favor, completa tus datos para el Check-In.");
+                return;
+            }
+            if (status === "yes" && guests === "") {
+                alert("Por favor, indica cuántos pasajeros abordarán.");
+                return;
+            }
+
+            let message = "";
+            if (status === "yes") {
+                message = encodeURIComponent(`¡Hola! Soy ${name}. Sí, confirmo con gusto mi asistencia a los XV años de Grecia Renata. Seremos ${guests} persona(s) en total.`);
+            } else {
+                message = encodeURIComponent(`¡Hola! Soy ${name}. Lamentablemente no me será posible asistir a los XV años de Grecia Renata. Agradezco mucho la invitación.`);
+            }
+            window.open(`https://wa.me/${currentPhoneNumber}?text=${message}`, '_blank');
+        }
+
+        // --- ENVÍO DE MENSAJE DE DESEOS A WHATSAPP ---
+        function sendWish() {
+            const name = document.getElementById("wish-name").value.trim();
+            const wish = document.getElementById("wish-message").value.trim();
+            
+            if (name === "" || wish === "") {
+                alert("Por favor, ingresa tu nombre y tu mensaje.");
+                return;
+            }
+            const message = encodeURIComponent(`Hola Grecia Renata, soy ${name}. Te envío este mensaje con mucho cariño:\n\n"${wish}"`);
+            window.open(`https://wa.me/${currentPhoneNumber}?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+</html>
