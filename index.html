@@ -4,140 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis XV Años - Grecia Renata</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Pinyon+Script&family=Montserrat:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Paleta Azul Pastel & Magia */
-            --bg-pearl: #F4F9FF;       
-            --mint-subtle: #E6F0FA;    
-            --pink-subtle: #D8E8F8;    
             --gold-editorial: #7BA4C7; 
             --accent-glow: #A8C9E6;
-            --text-dark: #2C3E50;      
-            --text-muted: #5D6D7E;
-            --black-theme: #1A252F;
+            --text-dark: #1F2D3D;      
+            --text-muted: #4A5C6D;
             
             --transition-smooth: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body, html {
-            width: 100%;
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-pearl);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
+            width: 100%; font-family: 'Montserrat', sans-serif;
+            color: var(--text-dark); overflow-x: hidden; scroll-behavior: smooth;
+            background-color: #000; /* Respaldo */
         }
 
-        /* --- DESTELLOS Y MAGIA (Fondo) --- */
-        .magic-dust {
-            position: absolute; width: 100%; height: 100%;
-            top: 0; left: 0; pointer-events: none; z-index: 1; overflow: hidden;
+        /* --- FONDOS FIJOS --- */
+        #fixed-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('assets/fondo2.jpg') no-repeat center center;
+            background-size: cover; z-index: -1; opacity: 0; transition: opacity 1.5s ease;
         }
+        body.content-active #fixed-bg { opacity: 1; }
+
+        /* --- DESTELLOS Y NUBES (Efectos Especiales) --- */
+        .magic-dust { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 1; overflow: hidden; }
         .sparkle {
             position: absolute; background: #fff; border-radius: 50%;
-            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
-            animation: floatSparkle 4s infinite ease-in-out;
-            opacity: 0;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9);
+            animation: floatSparkle 4s infinite ease-in-out; opacity: 0;
         }
         @keyframes floatSparkle {
             0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            50% { transform: translateY(-20px) scale(1.2); opacity: 0.8; }
-            100% { transform: translateY(-40px) scale(0.5); opacity: 0; }
+            50% { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
+            100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
+        }
+
+        .cloud {
+            position: absolute; background: rgba(255,255,255,0.15); border-radius: 50px;
+            filter: blur(8px); animation: drift 20s infinite linear; pointer-events: none; z-index: 0;
+        }
+        @keyframes drift {
+            from { transform: translateX(-150px); }
+            to { transform: translateX(120vw); }
         }
 
         /* --- REPRODUCTOR DE MÚSICA (STICKY) --- */
         .sticky-music-btn {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 50px; height: 50px;
-            background-color: var(--gold-editorial);
-            border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 10px 25px rgba(123, 164, 199, 0.5);
-            z-index: 2000; cursor: pointer; opacity: 0; visibility: hidden;
-            transform: translateY(20px) scale(0.9);
-            transition: all 0.6s var(--transition-smooth); border: none; outline: none;
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background-color: var(--gold-editorial); border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 10px 25px rgba(123, 164, 199, 0.5); z-index: 2000; cursor: pointer; opacity: 0; visibility: hidden;
+            transform: translateY(20px) scale(0.9); transition: all 0.6s var(--transition-smooth); border: none; outline: none;
         }
         body.content-active .sticky-music-btn { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
         .sticky-music-btn:hover { transform: scale(1.1); background-color: #5d8ab0; }
         .sticky-music-btn svg { width: 18px; height: 18px; fill: #fff; }
 
-        /* --- SOBRE EDITORIAL --- */
+        /* --- SOBRE EDITORIAL CON FONDO --- */
         #envelope-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-pearl); 
+            background: url('assets/fondo.jpg') no-repeat center center; background-size: cover;
             z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1.2s ease-in-out, visibility 1.2s;
+        }
+        /* Overlay oscuro para que resalte el sobre si el fondo es muy claro */
+        #envelope-screen::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.4); backdrop-filter: blur(3px); z-index: 1;
         }
         #envelope-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
         .envelope-text-container {
-            text-align: center; margin-bottom: 50px;
-            animation: floatText 4s ease-in-out infinite; position: relative; z-index: 10;
+            text-align: center; margin-bottom: 50px; animation: floatText 4s ease-in-out infinite; position: relative; z-index: 10;
         }
-        .env-tag {
-            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 8px;
-            text-transform: uppercase; color: var(--text-muted); font-weight: 500;
-        }
-        .env-title {
-            font-family: 'Pinyon Script', cursive; font-size: 75px;
-            color: var(--gold-editorial); line-height: 1.2; margin-top: 5px;
-            text-shadow: 0 0 15px rgba(123, 164, 199, 0.3);
-        }
+        .env-tag { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 10px; text-transform: uppercase; color: #333; font-weight: 700; text-shadow: 0 2px 5px rgba(255,255,255,0.8); }
+        .env-title { font-family: 'Pinyon Script', cursive; font-size: 80px; color: var(--gold-editorial); line-height: 1.2; margin-top: 5px; text-shadow: 0 4px 15px rgba(255,255,255,0.9); }
 
         .envelope-wrapper { position: relative; cursor: pointer; transition: transform 0.6s var(--transition-smooth); z-index: 10; }
         .envelope-wrapper:hover { transform: translateY(-8px); }
 
         .envelope {
-            position: relative; width: 320px; height: 210px;
-            background-color: #FFFFFF; border-radius: 2px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.03);
+            position: relative; width: 320px; height: 210px; background-color: #FFFFFF; border-radius: 4px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.05);
         }
         .envelope::before {
-            content: ''; position: absolute; top: 0; right: 0;
-            border-right: 160px solid #E6F0FA; border-top: 105px solid transparent; border-bottom: 105px solid #E6F0FA; z-index: 2;
+            content: ''; position: absolute; top: 0; right: 0; border-right: 160px solid #E6F0FA; border-top: 105px solid transparent; border-bottom: 105px solid #E6F0FA; z-index: 2; border-radius: 0 4px 4px 0;
         }
         .envelope::after {
-            content: ''; position: absolute; top: 0; left: 0;
-            border-left: 160px solid #D8E8F8; border-top: 105px solid transparent; border-bottom: 105px solid #D8E8F8; z-index: 2;
+            content: ''; position: absolute; top: 0; left: 0; border-left: 160px solid #D8E8F8; border-top: 105px solid transparent; border-bottom: 105px solid #D8E8F8; z-index: 2; border-radius: 4px 0 0 4px;
         }
         .front-flap {
-            position: absolute; top: 0; left: 0;
-            border-left: 160px solid transparent; border-right: 160px solid transparent;
-            border-top: 115px solid #C4DAEE; transform-origin: top;
-            transition: transform 0.9s var(--transition-smooth); z-index: 4;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.04));
+            position: absolute; top: 0; left: 0; border-left: 160px solid transparent; border-right: 160px solid transparent;
+            border-top: 115px solid #C4DAEE; transform-origin: top; transition: transform 0.9s var(--transition-smooth); z-index: 4; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
         .envelope-wrapper.open .front-flap { transform: rotateX(180deg); z-index: 1; }
 
         .wax-seal {
-            position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
-            width: 45px; height: 45px; background-color: var(--gold-editorial);
-            border-radius: 50%; z-index: 5; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(123, 164, 199, 0.4); 
+            position: absolute; top: 90px; left: 50%; transform: translateX(-50%); width: 45px; height: 45px; background-color: var(--gold-editorial);
+            border-radius: 50%; z-index: 5; display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 15px rgba(123, 164, 199, 0.6); 
             transition: opacity 0.5s ease 0.1s, transform 0.5s ease;
         }
         .wax-seal svg { width: 22px; height: 22px; fill: #fff; }
         .envelope-wrapper.open .wax-seal { opacity: 0; transform: translateX(-50%) scale(0.5); pointer-events: none; }
 
-        .hint-text {
-            text-align: center; font-size: 11px; font-weight: 400; text-transform: uppercase; 
-            letter-spacing: 4px; color: var(--text-muted); margin-top: 40px; 
-            animation: pulse 2.5s infinite;
-        }
+        .hint-text { text-align: center; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 4px; color: #333; margin-top: 40px; text-shadow: 0 2px 4px rgba(255,255,255,0.8); animation: pulse 2.5s infinite; position: relative; z-index: 10;}
 
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         @keyframes floatText { 0% { transform: translateY(0); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0); } }
 
-        /* --- CONTENIDO PRINCIPAL Y ANIMACIONES ESCALONADAS --- */
+        /* --- CONTENIDO PRINCIPAL --- */
         #main-invitation {
-            display: none; width: 100%; flex-direction: column; align-items: center;
-            opacity: 0; animation: fadeInMain 2s forwards 0.3s;
+            display: none; width: 100%; flex-direction: column; align-items: center; opacity: 0; animation: fadeInMain 2s forwards 0.3s;
         }
         body.content-active #main-invitation { display: flex; }
         @keyframes fadeInMain { to { opacity: 1; } }
@@ -145,163 +127,135 @@
         .anim-element { opacity: 0; transition: all 1.5s var(--transition-smooth); position: relative; z-index: 2; }
         .anim-fade-up { transform: translateY(60px) scale(0.98); }
         .anim-fade-up.in-view { opacity: 1; transform: translateY(0) scale(1); }
-        
         .anim-zoom { transform: scale(0.85); opacity: 0; }
         .anim-zoom.in-view { opacity: 1; transform: scale(1); }
 
-        .delay-1 { transition-delay: 0.1s; }
-        .delay-2 { transition-delay: 0.3s; }
-        .delay-3 { transition-delay: 0.5s; }
-        .delay-4 { transition-delay: 0.7s; }
+        .delay-1 { transition-delay: 0.1s; } .delay-2 { transition-delay: 0.3s; }
+        .delay-3 { transition-delay: 0.5s; } .delay-4 { transition-delay: 0.7s; }
 
-        /* Estructura de Secciones Minimalistas */
+        /* Secciones con Glassmorphism para que el fondo se vea */
         .section-block {
             width: 100%; padding: 110px 20px; display: flex; flex-direction: column; align-items: center; text-align: center;
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
-
-        .bg-pearl { background-color: var(--bg-pearl); }
-        .bg-mint { background-color: var(--mint-subtle); }
-        .bg-pink { background-color: var(--pink-subtle); }
-        .bg-black { background-color: var(--black-theme); color: #ffffff; }
+        .bg-pearl { background-color: rgba(244, 249, 255, 0.75); }
+        .bg-mint { background-color: rgba(225, 238, 250, 0.75); }
+        .bg-pink { background-color: rgba(216, 232, 248, 0.75); }
+        .bg-black { background-color: rgba(26, 37, 47, 0.85); color: #ffffff; }
 
         /* Tipografía Editorial */
-        .tag-line {
-            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px;
-            text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 25px; font-weight: 600;
-        }
-        .title-script {
-            font-family: 'Pinyon Script', cursive; font-size: 85px;
-            color: var(--gold-editorial); margin-bottom: 20px; line-height: 1.1; font-weight: 400;
-            text-shadow: 0px 4px 15px rgba(123, 164, 199, 0.2);
-        }
-        .body-serif {
-            font-family: 'Cormorant Garamond', serif; font-size: 24px;
-            line-height: 1.6; color: var(--text-muted); font-style: italic;
-            max-width: 600px; padding: 0 15px; font-weight: 400;
-        }
+        .tag-line { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 25px; font-weight: 700; }
+        .title-script { font-family: 'Pinyon Script', cursive; font-size: 90px; color: var(--gold-editorial); margin-bottom: 20px; line-height: 1.1; font-weight: 400; text-shadow: 0px 4px 15px rgba(255,255,255,0.5); }
+        .body-serif { font-family: 'Cormorant Garamond', serif; font-size: 26px; line-height: 1.6; color: var(--text-dark); font-style: italic; max-width: 600px; padding: 0 15px; font-weight: 500; }
+        
         .bg-black .title-script { color: #A8C9E6; }
-        .bg-black .body-serif { color: #D8E8F8; }
+        .bg-black .body-serif { color: #E6F0FA; }
 
-        .line-divider { width: 1px; height: 60px; background-color: var(--gold-editorial); margin: 35px auto; }
-        .line-horizontal { width: 60px; height: 1px; background-color: var(--gold-editorial); margin: 40px auto; }
-
-        /* Imágenes */
-        .photo-frame {
-            width: 100%; max-width: 420px; margin: 40px auto;
-            box-shadow: 0 20px 50px rgba(123, 164, 199, 0.15); border-radius: 12px;
-            overflow: hidden; border: 5px solid #FFFFFF; position: relative; z-index: 2;
-        }
-        .bg-black .photo-frame { border-color: #222222; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .photo-frame img { width: 100%; display: block; filter: contrast(1.05) saturate(0.95); transition: transform 0.8s ease; }
-        .photo-frame:hover img { transform: scale(1.05); }
-
-        /* Información Textual */
-        .info-title {
-            font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4;
-            text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 12px; font-weight: 600;
-        }
-        .info-data {
-            font-family: 'Cormorant Garamond', serif; font-size: 34px;
-            color: var(--text-dark); margin-bottom: 5px; font-weight: 500; line-height: 1.3;
-        }
+        /* Rutas de Vuelo (Divisores Temáticos) */
+        .flight-path { width: 100%; max-width: 300px; height: 2px; border-bottom: 2px dashed var(--gold-editorial); position: relative; margin: 40px auto; opacity: 0.5; }
+        .flight-path::after { content: '✈'; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 20px; color: var(--gold-editorial); background: transparent; padding: 0 10px; }
+        
+        .info-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; line-height: 1.4; text-transform: uppercase; color: var(--gold-editorial); margin-bottom: 12px; font-weight: 700; }
+        .info-data { font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--text-dark); margin-bottom: 5px; font-weight: 600; line-height: 1.3; }
         .bg-black .info-data { color: #ffffff; }
 
-        /* Botones Minimalistas */
-        .btn-solid {
-            display: inline-block; background-color: var(--gold-editorial); color: #fff;
-            padding: 17px 35px; font-family: 'Montserrat', sans-serif; font-size: 12px;
-            font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
-            text-decoration: none; border: none; cursor: pointer; border-radius: 30px;
-            transition: all 0.4s ease; margin-top: 30px; position: relative; z-index: 5;
-            box-shadow: 0 8px 20px rgba(123, 164, 199, 0.3);
+        /* Sello de Pasaporte CSS */
+        .passport-stamp {
+            position: absolute; top: 10%; right: 5%; width: 120px; height: 120px;
+            border: 4px solid rgba(123, 164, 199, 0.3); border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transform: rotate(15deg); font-family: 'Space Mono', monospace; color: rgba(123, 164, 199, 0.4);
+            font-weight: bold; font-size: 12px; text-transform: uppercase; pointer-events: none; z-index: 0;
         }
-        .btn-solid:hover { background-color: #5d8ab0; transform: translateY(-3px); box-shadow: 0 12px 25px rgba(123, 164, 199, 0.4); }
+        .passport-stamp::before { content: 'APPROVED'; font-size: 16px; letter-spacing: 2px; border-top: 1px solid rgba(123,164,199,0.3); border-bottom: 1px solid rgba(123,164,199,0.3); padding: 5px 0; margin-top: 5px; }
 
-        /* Calendario Diciembre 2026 */
-        .calendar-wrapper {
-            width: 100%; max-width: 340px; margin: 40px auto; padding: 35px 25px;
-            background: #fff; border-radius: 12px; box-shadow: 0 15px 45px rgba(123,164,199,0.1);
-            box-sizing: border-box; border: 1px solid rgba(123,164,199,0.1); position: relative; z-index: 2;
+        /* CUENTA REGRESIVA ESTILO AEROPUERTO */
+        .countdown-container {
+            display: flex; justify-content: center; gap: 15px; margin: 30px auto; width: 100%; max-width: 400px;
         }
-        .calendar-month {
-            font-family: 'Cinzel', serif; font-size: 20px; color: var(--text-dark);
-            text-transform: uppercase; letter-spacing: 4px; margin-bottom: 30px; font-weight: 600;
+        .time-box {
+            background: rgba(255,255,255,0.6); border: 1px solid rgba(123, 164, 199, 0.3);
+            border-radius: 8px; padding: 15px 10px; width: 75px; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 10px 20px rgba(123, 164, 199, 0.1); backdrop-filter: blur(5px);
         }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; box-sizing: border-box; }
-        .cal-header { font-family: 'Montserrat', sans-serif; font-size: clamp(10px, 3vw, 12px); font-weight: 600; color: var(--gold-editorial); padding-bottom: 12px; }
-        .cal-day { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 4.5vw, 20px); font-weight: 500; color: var(--text-muted); display: flex; justify-content: center; align-items: center; aspect-ratio: 1; }
-        .cal-day.active { background-color: var(--gold-editorial); color: #fff; border-radius: 50%; font-weight: 600; box-shadow: 0 4px 12px rgba(123, 164, 199, 0.4); animation: pulse 2s infinite; }
+        .time-box span { font-family: 'Space Mono', monospace; font-size: 28px; font-weight: 700; color: var(--gold-editorial); line-height: 1; }
+        .time-box small { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; font-weight: 600; letter-spacing: 1px; }
+
+        /* Botones */
+        .btn-solid {
+            display: inline-block; background-color: var(--gold-editorial); color: #fff; padding: 17px 35px;
+            font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+            text-decoration: none; border: none; cursor: pointer; border-radius: 30px; transition: all 0.4s ease; margin-top: 30px; position: relative; z-index: 5;
+            box-shadow: 0 8px 25px rgba(123, 164, 199, 0.4);
+        }
+        .btn-solid:hover { background-color: #5d8ab0; transform: translateY(-3px); box-shadow: 0 12px 30px rgba(123, 164, 199, 0.5); }
 
         /* Mapas */
-        .map-box {
-            width: 100%; max-width: 550px; height: 320px; margin: 30px auto;
-            overflow: hidden; border-radius: 12px; box-shadow: 0 15px 40px rgba(123,164,199,0.15); position: relative; z-index: 2;
-        }
-        .map-box iframe { width: 100%; height: 100%; border: none; filter: grayscale(20%) contrast(1.05) opacity(0.9); }
+        .map-box { width: 100%; max-width: 550px; height: 320px; margin: 30px auto; overflow: hidden; border-radius: 12px; box-shadow: 0 15px 40px rgba(123,164,199,0.2); position: relative; z-index: 2; border: 4px solid #fff; }
+        .map-box iframe { width: 100%; height: 100%; border: none; filter: grayscale(10%) contrast(1.05); }
 
-        /* BOLETO DE AVIÓN (ESTÉTICA BOARDING PASS, TEXTO DE XV) */
+        /* BOLETO DE AVIÓN TEMÁTICO */
         .boarding-pass {
-            width: 100%; max-width: 400px; margin: 40px auto; background: #fff;
-            border-radius: 16px; overflow: hidden; position: relative;
-            box-shadow: 0 20px 50px rgba(123,164,199,0.15); text-align: left;
+            width: 100%; max-width: 420px; margin: 40px auto; background: rgba(255,255,255,0.95);
+            border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 25px 60px rgba(123,164,199,0.25); text-align: left;
+            border: 1px solid rgba(123,164,199,0.3); backdrop-filter: blur(10px);
         }
-        .bp-header {
-            background: var(--gold-editorial); color: #fff; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .bp-header-title { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; }
+        .bp-header { background: var(--gold-editorial); color: #fff; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .bp-header-title { font-family: 'Cinzel', serif; font-size: 15px; letter-spacing: 4px; text-transform: uppercase; font-weight: 700; }
         .bp-flight-icon svg { width: 24px; height: 24px; fill: #fff; transform: rotate(45deg); }
-        .bp-body { padding: 30px 25px; border-bottom: 2px dashed rgba(123,164,199,0.3); position: relative; }
+        .bp-body { padding: 30px 25px; border-bottom: 2px dashed rgba(123,164,199,0.4); position: relative; }
+        
+        /* Cortes Laterales del Ticket */
         .bp-body::before, .bp-body::after {
             content: ''; position: absolute; bottom: -15px; width: 30px; height: 30px;
-            background-color: var(--pink-subtle); border-radius: 50%;
+            background-color: var(--pink-subtle); border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
         .bp-body::before { left: -15px; } .bp-body::after { right: -15px; }
         
-        .bp-route { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .bp-code { font-family: 'Cinzel', serif; font-size: 32px; color: var(--text-dark); font-weight: 600; }
-        .bp-plane { color: var(--gold-editorial); font-size: 24px; animation: flyRight 3s infinite linear; }
-        @keyframes flyRight { 0% { transform: translateX(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(10px); opacity: 0; } }
+        .bp-route { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .bp-code { font-family: 'Space Mono', monospace; font-size: 34px; color: var(--text-dark); font-weight: 700; }
+        .bp-plane { color: var(--gold-editorial); font-size: 26px; animation: flyRight 3s infinite linear; }
+        @keyframes flyRight { 0% { transform: translateX(-15px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateX(15px); opacity: 0; } }
         
-        .bp-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .bp-label { font-family: 'Montserrat', sans-serif; font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 5px; }
-        .bp-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--text-dark); font-weight: 600; line-height: 1.1; }
+        .bp-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .bp-label { font-family: 'Space Mono', monospace; font-size: 10px; text-transform: uppercase; color: var(--gold-editorial); letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+        .bp-value { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--text-dark); font-weight: 700; line-height: 1.1; }
         
-        .bp-footer { padding: 20px; text-align: center; background: #fafbfc; }
+        .bp-footer { padding: 25px; text-align: center; background: rgba(250, 251, 252, 0.9); }
         .bp-barcode {
-            width: 80%; height: 40px; margin: 0 auto 10px auto;
-            background: repeating-linear-gradient(90deg, var(--text-dark), var(--text-dark) 2px, transparent 2px, transparent 4px, var(--text-dark) 4px, var(--text-dark) 5px, transparent 5px, transparent 8px);
-            opacity: 0.7;
+            width: 85%; height: 45px; margin: 0 auto 10px auto;
+            background: repeating-linear-gradient(90deg, var(--text-dark), var(--text-dark) 3px, transparent 3px, transparent 6px, var(--text-dark) 6px, var(--text-dark) 7px, transparent 7px, transparent 10px);
+            opacity: 0.8;
         }
+        .bp-disclaimer { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
 
         /* Formularios */
         .form-group { width: 100%; max-width: 400px; margin: 0 auto 20px auto; position: relative; z-index: 2; }
         .input-line {
-            width: 100%; padding: 18px 0; background: transparent; border: none;
-            border-bottom: 1px solid rgba(123,164,199,0.3); color: var(--text-dark);
-            font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 500; outline: none;
-            text-align: center; transition: border-color 0.4s;
+            width: 100%; padding: 18px 0; background: rgba(255,255,255,0.5); border: 1px solid rgba(123,164,199,0.3); border-radius: 8px;
+            color: var(--text-dark); font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 600; outline: none;
+            text-align: center; transition: all 0.4s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .input-line:focus { border-bottom-color: var(--gold-editorial); }
-        .input-line::placeholder { color: #A0A0A0; font-weight: 400; }
-        .input-line:disabled { color: var(--gold-editorial); background-color: rgba(255,255,255,0.4); cursor: not-allowed; }
-        textarea.input-line { resize: vertical; min-height: 90px; }
+        .input-line:focus { border-color: var(--gold-editorial); background: rgba(255,255,255,0.9); box-shadow: 0 0 15px rgba(123,164,199,0.2); }
+        .input-line::placeholder { color: #8898AA; font-weight: 500; }
+        .input-line:disabled { color: var(--gold-editorial); background-color: rgba(255,255,255,0.7); cursor: not-allowed; }
+        textarea.input-line { resize: vertical; min-height: 100px; }
         select.input-line { appearance: none; text-align-last: center; cursor: pointer; }
 
         @media (max-width: 400px) {
-            .env-title { font-size: 60px; }
-            .title-script { font-size: 65px; }
-            .section-block { padding: 80px 15px; }
-            .info-data { font-size: 28px; }
-            .map-box { height: 260px; }
-            .envelope { width: 300px; height: 195px; }
-            .envelope::before, .envelope::after { border-left-width: 150px; border-right-width: 150px; border-top-width: 97px; border-bottom-width: 97px; }
+            .env-title { font-size: 65px; } .title-script { font-size: 70px; }
+            .section-block { padding: 80px 15px; } .info-data { font-size: 30px; }
+            .map-box { height: 260px; } .envelope { width: 300px; height: 195px; }
+            .envelope::before, .envelope::after { border-left-width: 150px; border-top-width: 97px; border-bottom-width: 97px; }
             .front-flap { border-left-width: 150px; border-right-width: 150px; border-top-width: 105px; }
+            .bp-code { font-size: 26px; } .time-box { width: 65px; padding: 10px 5px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- FONDO FIJO -->
+    <div id="fixed-bg"></div>
 
     <!-- AUDIO OCULTO -->
     <audio id="bg-music" src="assets/song.mp3" loop></audio>
@@ -322,12 +276,11 @@
         <div class="envelope-wrapper" onclick="openEnvelope()">
             <div class="front-flap"></div>
             <div class="wax-seal">
-                <!-- Icono de Avión conservado como detalle estético -->
                 <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
             </div>
             <div class="envelope"></div>
         </div>
-        <div class="hint-text" style="position: relative; z-index: 10;">Tocar para abrir</div>
+        <div class="hint-text">Tocar para abrir</div>
     </div>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -335,40 +288,37 @@
         
         <!-- Portada -->
         <section class="section-block bg-pearl">
-            <!-- Partículas Mágicas -->
             <div class="magic-dust" id="magic-container-1"></div>
+            <!-- Animación de Nubes -->
+            <div class="cloud" style="width: 150px; height: 40px; top: 15%; left: -10%; animation-duration: 25s;"></div>
+            <div class="cloud" style="width: 200px; height: 60px; top: 60%; left: -20%; animation-duration: 35s; animation-delay: 5s;"></div>
+
+            <div class="passport-stamp">DIC 26<br>2026</div>
 
             <div class="anim-element anim-fade-up delay-1 tag-line">Mis XV Años</div>
             <h1 class="anim-element anim-zoom delay-2 title-script">Grecia Renata</h1>
-            <div class="anim-element anim-fade-up delay-3 line-divider"></div>
+            <div class="flight-path anim-element anim-fade-up delay-3"></div>
             <p class="anim-element anim-fade-up delay-4 body-serif">
                 "La vida es un camino lleno de luces, y mis 15 serán una de las más brillantes."
             </p>
-            <div class="anim-element anim-fade-up delay-4 photo-frame">
-                <img src="assets/foto1.jpg" alt="Grecia Renata" onerror="this.style.display='none'">
-            </div>
         </section>
 
-        <!-- Fecha y Calendario -->
+        <!-- Fecha y Cuenta Regresiva -->
         <section class="section-block bg-mint">
             <div class="magic-dust" id="magic-container-2"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Será un honor contar con tu presencia el</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 40px;">26 de Diciembre</div>
-            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 24px; color: var(--gold-editorial); letter-spacing: 2px;">2026</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 42px;">26 de Diciembre</div>
+            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 26px; color: var(--gold-editorial); letter-spacing: 2px;">2026</div>
 
-            <div class="anim-element anim-zoom delay-4 calendar-wrapper">
-                <div class="calendar-month">Diciembre</div>
-                <div class="calendar-grid">
-                    <div class="cal-header">D</div><div class="cal-header">L</div><div class="cal-header">M</div><div class="cal-header">M</div><div class="cal-header">J</div><div class="cal-header">V</div><div class="cal-header">S</div>
-                    <div></div><div></div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
-                    <div class="cal-day">6</div><div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div>
-                    <div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
-                    <div class="cal-day">20</div><div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day active">26</div>
-                    <div class="cal-day">27</div><div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div><div></div><div></div>
-                </div>
+            <!-- CUENTA REGRESIVA -->
+            <div class="countdown-container anim-element anim-zoom delay-4">
+                <div class="time-box"><span id="days">00</span><small>Días</small></div>
+                <div class="time-box"><span id="hours">00</span><small>Hrs</small></div>
+                <div class="time-box"><span id="mins">00</span><small>Min</small></div>
+                <div class="time-box"><span id="secs">00</span><small>Seg</small></div>
             </div>
 
-            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+de+Grecia+Renata&dates=20261226T230000Z/20261227T070000Z&details=Celebremos+juntos+este+d%C3%ADa+tan+especial" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agendar Evento</a>
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=XV+A%C3%B1os+de+Grecia+Renata&dates=20261227T010000Z/20261227T070000Z&details=Celebremos+juntos+este+d%C3%ADa+tan+especial" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agendar Evento</a>
         </section>
 
         <!-- Familia -->
@@ -379,19 +329,17 @@
             <div class="anim-element anim-fade-up delay-3" style="font-family: 'Cinzel', serif; font-size: 20px; color: var(--gold-editorial); margin: 10px 0;">&</div>
             <div class="anim-element anim-fade-up delay-3 info-data">Gustavo</div>
             
-            <div class="anim-element anim-zoom delay-4 line-horizontal"></div>
+            <div class="flight-path anim-element anim-zoom delay-4"></div>
             
             <div class="anim-element anim-fade-up delay-4 info-title">Y mis Padrinos</div>
-            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 28px;">Teresa y Abraham</div>
-
-            <div class="anim-element anim-fade-up delay-4 photo-frame" style="margin-top: 70px;">
-                <img src="assets/foto2.jpg" alt="Familia" onerror="this.style.display='none'">
-            </div>
+            <div class="anim-element anim-fade-up delay-4 info-data" style="font-size: 32px;">Teresa y Abraham</div>
         </section>
 
         <!-- Recepción -->
         <section class="section-block bg-pink">
             <div class="magic-dust" id="magic-container-4"></div>
+            <div class="cloud" style="width: 180px; height: 50px; top: 10%; left: -15%; animation-duration: 28s;"></div>
+            
             <div class="anim-element anim-fade-up delay-1 info-title">Recepción</div>
             <div class="anim-element anim-fade-up delay-2 info-data">El Patio de Martha</div>
             <div class="anim-element anim-fade-up delay-3 tag-line" style="font-size: 14px; margin: 15px 0; color: var(--text-muted);">Metepec • 7:00 p.m.</div>
@@ -406,13 +354,13 @@
         <section class="section-block bg-black">
             <div class="magic-dust" id="magic-container-5"></div>
             <div class="anim-element anim-fade-up delay-1 info-title" style="color: var(--accent-glow);">Dress Code</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-family: 'Cinzel', serif; font-size: 40px; margin: 25px 0; letter-spacing: 5px; color: #fff;">
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-family: 'Cinzel', serif; font-size: 42px; margin: 25px 0; letter-spacing: 6px; color: #fff;">
                 FORMAL
             </div>
-            <div class="anim-element anim-fade-up delay-3 line-divider" style="background-color: #334; height: 40px;"></div>
-            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #A8C9E6; font-size: 20px;">
+            <div class="flight-path anim-element anim-fade-up delay-3" style="border-color: #334;"></div>
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="color: #A8C9E6; font-size: 22px;">
                 Se solicita amablemente asistir con vestimenta formal.<br>
-                <strong style="color: #fff; font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase; display: block; margin-top: 15px; letter-spacing: 2px;">Por favor evita la paleta de colores azules.</strong>
+                <strong style="color: #fff; font-family: 'Montserrat', sans-serif; font-size: 14px; text-transform: uppercase; display: block; margin-top: 20px; letter-spacing: 2px; padding: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">Por favor evita la paleta de colores azules.</strong>
             </p>
         </section>
 
@@ -423,8 +371,8 @@
             <svg class="anim-element anim-zoom delay-2" viewBox="0 0 24 24" style="width: 45px; height: 45px; fill: var(--gold-editorial); margin: 20px 0; position: relative; z-index: 2;">
                 <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
             </svg>
-            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 34px;">Lluvia de Sobres</div>
-            <p class="anim-element anim-fade-up delay-4 body-serif" style="margin-top: 20px; font-size: 20px;">
+            <div class="anim-element anim-fade-up delay-3 info-data" style="font-size: 36px;">Lluvia de Sobres</div>
+            <p class="anim-element anim-fade-up delay-4 body-serif" style="margin-top: 20px; font-size: 22px;">
                 El obsequio más hermoso es tu presencia. Si deseas tener un detalle adicional, habrá un buzón en la recepción para tu obsequio en efectivo.
             </p>
         </section>
@@ -433,13 +381,13 @@
         <section class="section-block bg-mint">
             <div class="magic-dust" id="magic-container-7"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Música</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Nuestra Playlist</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 20px auto 40px auto; font-size: 20px;">
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Nuestra Playlist</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 20px auto 40px auto; font-size: 22px;">
                 Ayúdame a crear el ambiente perfecto agregando tus canciones favoritas para la pista de baile.
             </p>
             
             <div class="anim-element anim-zoom delay-4" style="width: 100%; max-width: 480px; position: relative; z-index: 2;">
-                <iframe data-testid="embed-iframe" style="border-radius:12px; box-shadow: 0 15px 40px rgba(123,164,199,0.15);" src="https://open.spotify.com/embed/playlist/6KIEfTmTw2kdgbBrmICgG2?utm_source=generator&si=7d1950f7bc244baf" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <iframe data-testid="embed-iframe" style="border-radius:12px; box-shadow: 0 20px 50px rgba(123,164,199,0.25);" src="https://open.spotify.com/embed/playlist/6KIEfTmTw2kdgbBrmICgG2?utm_source=generator&si=7d1950f7bc244baf" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
             
             <a href="https://open.spotify.com/playlist/6KIEfTmTw2kdgbBrmICgG2?si=b7eb8ee7c72147ac&pt=80c3fff350d759c40465b0b1528cb0f3" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Agregar Canciones</a>
@@ -449,8 +397,8 @@
         <section class="section-block bg-pearl">
             <div class="magic-dust" id="magic-container-8"></div>
             <div class="anim-element anim-fade-up delay-1 info-title">Momentos</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Galería en Vivo</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 25px auto; font-size: 20px;">
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Galería en Vivo</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 25px auto; font-size: 22px;">
                 Captura la magia de esta noche. Comparte todas las fotos y videos que tomes directamente en nuestro álbum digital.
             </p>
             <a href="https://drive.google.com/drive/folders/1rfk1XNECEZZjJb5x6Y0gmFEgtP4I9SfG?usp=sharing" target="_blank" class="anim-element anim-fade-up delay-4 btn-solid">Subir mis Fotos</a>
@@ -459,6 +407,7 @@
         <!-- RSVP & Boleto -->
         <section class="section-block bg-pink">
             <div class="magic-dust" id="magic-container-9"></div>
+            <div class="cloud" style="width: 150px; height: 40px; top: 5%; right: -10%; animation-duration: 22s;"></div>
             
             <!-- Boleto de Acceso Estilo Boarding Pass -->
             <div id="pases-section" style="display: none; width: 100%;">
@@ -470,39 +419,40 @@
                         <div class="bp-flight-icon"><svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></div>
                     </div>
                     <div class="bp-body">
+                        <div class="passport-stamp" style="top: 20%; right: 10%; opacity: 0.3;">VALID<br>PASS</div>
                         <div class="bp-route">
                             <div class="bp-code">DIC</div>
                             <div class="bp-plane">✈</div>
                             <div class="bp-code">26</div>
                         </div>
-                        <div class="bp-details" style="margin-bottom: 15px;">
-                            <div>
+                        <div class="bp-details">
+                            <div style="grid-column: span 2;">
                                 <div class="bp-label">Invitado Especial</div>
-                                <div class="bp-value" id="ticket-name">Nombre del Invitado</div>
+                                <div class="bp-value" id="ticket-name" style="font-size: 28px;">Nombre del Invitado</div>
                             </div>
                         </div>
-                        <div class="bp-details">
+                        <div class="bp-details" style="margin-top: 15px; border-top: 1px solid rgba(123,164,199,0.2); padding-top: 15px;">
                             <div>
-                                <div class="bp-label">Boleto</div>
-                                <div class="bp-value">GR-2612</div>
+                                <div class="bp-label">Clase</div>
+                                <div class="bp-value" style="font-family: 'Space Mono', monospace; font-size: 18px;">FIRST</div>
                             </div>
                             <div>
                                 <div class="bp-label">Pases Asignados</div>
-                                <div class="bp-value" id="ticket-count" style="color: var(--gold-editorial); font-size: 28px;">0</div>
+                                <div class="bp-value" id="ticket-count" style="color: var(--gold-editorial); font-size: 32px; font-family: 'Space Mono', monospace;">0</div>
                             </div>
                         </div>
                     </div>
                     <div class="bp-footer">
                         <div class="bp-barcode"></div>
-                        <div class="bp-label">Muestra esta pantalla al llegar</div>
+                        <div class="bp-disclaimer">Muestra esta pantalla al llegar</div>
                     </div>
                 </div>
             </div>
 
             <!-- Formulario RSVP -->
-            <div class="anim-element anim-fade-up delay-1 info-title" style="margin-top: 40px;">RSVP</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Confirmar Asistencia</div>
-            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 15px auto 35px auto; font-size: 20px;">
+            <div class="anim-element anim-fade-up delay-1 info-title" style="margin-top: 50px;">RSVP</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Confirmar Asistencia</div>
+            <p class="anim-element anim-fade-up delay-3 body-serif" style="margin: 15px auto 35px auto; font-size: 22px;">
                 Agradeceremos tu confirmación lo antes posible para asegurar tu lugar en esta gran noche.
             </p>
 
@@ -525,11 +475,11 @@
             
             <button onclick="sendRSVP()" class="anim-element anim-fade-up delay-4 btn-solid" style="margin-bottom: 70px;">Confirmar por WhatsApp</button>
 
-            <div class="anim-element anim-zoom line-divider"></div>
+            <div class="flight-path anim-element anim-zoom"></div>
 
             <!-- Muro de Deseos -->
             <div class="anim-element anim-fade-up delay-1 info-title">Mensajes</div>
-            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 34px;">Muro de los Deseos</div>
+            <div class="anim-element anim-fade-up delay-2 info-data" style="font-size: 36px;">Muro de los Deseos</div>
             <div class="anim-element anim-fade-up delay-3 form-group" style="margin-top: 30px;">
                 <input type="text" id="wish-name" class="input-line" placeholder="De parte de...">
             </div>
@@ -562,6 +512,30 @@
             });
         }
         createMagicDust();
+
+        // --- LÓGICA DE CUENTA REGRESIVA ---
+        function updateCountdown() {
+            const eventDate = new Date("December 26, 2026 19:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = eventDate - now;
+
+            if (distance < 0) {
+                document.querySelector('.countdown-container').innerHTML = "<div class='info-data' style='color: var(--gold-editorial);'>¡El día ha llegado!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("mins").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("secs").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
 
         // --- CONTROL DE AUDIO ---
         let isMusicPlaying = false;
@@ -597,7 +571,7 @@
                     playIcon.style.display = 'none';
                     pauseIcon.style.display = 'block';
                 }).catch(e => {
-                    console.log("El navegador bloqueó el autoplay de audio.");
+                    console.log("Audio autoplay bloqueado.");
                     isMusicPlaying = false;
                     playIcon.style.display = 'block';
                     pauseIcon.style.display = 'none';
@@ -624,10 +598,10 @@
         let nombreInvitado = "Invitado Especial";
         const urlParams = new URLSearchParams(window.location.search);
         
-        // El número proporcionado para confirmaciones y deseos
+        // El número proporcionado
         const currentPhoneNumber = "527225461495"; 
 
-        // Base de datos de ejemplo (modificable según necesidades de Invytia)
+        // Base de datos de ejemplo (modificable para Invytia)
         const dbInvitados = {
             "1": { nombre: "Familia Ejemplo", pases: 4 },
         };
