@@ -277,6 +277,19 @@
         textarea.input-line { resize: vertical; min-height: 120px; }
         select.input-line { appearance: none; text-align-last: center; cursor: pointer; }
 
+        /* Casillas de Verificación Nominales */
+        .checkbox-label {
+            display: flex; align-items: center; justify-content: flex-start;
+            padding: 12px 15px; margin-bottom: 10px; background: rgba(255,255,255,0.7);
+            border: 1px solid var(--blue-pastel); border-radius: 8px; cursor: pointer;
+            transition: all 0.3s ease; text-align: left;
+        }
+        .checkbox-label:hover { background: rgba(255,255,255,0.9); border-color: var(--blue-medium); }
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 15px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--blue-medium);
+        }
+        .checkbox-label span { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-dark); }
+
         @media (max-width: 400px) {
             .env-title { font-size: 65px; } .title-script { font-size: 70px; }
             .section-block { padding: 90px 15px; } .info-data { font-size: 32px; }
@@ -522,7 +535,9 @@
             <div class="anim-element anim-fade-up delay-4 form-group">
                 <input type="text" id="rsvp-name" class="input-line" placeholder="Tu nombre y apellido">
             </div>
-            <div class="anim-element anim-fade-up delay-4 form-group">
+            
+            <!-- Selector genérico (visible solo si no hay ID) -->
+            <div class="anim-element anim-fade-up delay-4 form-group" id="rsvp-generic-status-container">
                 <select id="rsvp-status" class="input-line">
                     <option value="" disabled selected>¿Abordarás con nosotros?</option>
                     <option value="yes">Con gusto asistiré</option>
@@ -530,10 +545,23 @@
                 </select>
             </div>
             
-            <div class="anim-element anim-fade-up delay-4 form-group">
+            <div class="anim-element anim-fade-up delay-4 form-group" id="rsvp-generic-guests-container">
                 <select id="rsvp-guests" class="input-line" style="display: none;">
                     <option value="" disabled selected>¿Cuántos pasajeros asisten?</option>
                 </select>
+            </div>
+
+            <!-- Contenedor Dinámico para Sistema de Pases Nominales (Checkbox) -->
+            <div id="rsvp-dynamic-guests" class="anim-element anim-fade-up delay-4 form-group" style="display: none;">
+                <div style="font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700; color: var(--blue-dark); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;">
+                    Selecciona quiénes asistirán:
+                </div>
+                <div id="checkboxes-container" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Los checkboxes se insertarán aquí dinámicamente -->
+                </div>
+                <p style="font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-muted); margin-top: 15px; line-height: 1.4;">
+                    * Desmarca las casillas de quienes no podrán asistir. Si nadie puede asistir, desmarca todas.
+                </p>
             </div>
             
             <button onclick="sendRSVP()" class="anim-element anim-fade-up delay-4 btn-solid" style="margin-bottom: 80px;">Confirmar por WhatsApp</button>
@@ -562,7 +590,6 @@
                 const numSparkles = Math.floor(Math.random() * 8) + 6; 
                 for (let i = 0; i < numSparkles; i++) {
                     let sparkle = document.createElement('div');
-                    // Alternar colores
                     const colorClass = Math.random() > 0.5 ? 'white' : 'blue';
                     sparkle.classList.add('sparkle', colorClass);
                     
@@ -659,35 +686,66 @@
             document.querySelectorAll('.anim-element').forEach(el => observer.observe(el));
         });
 
-        // --- LÓGICA DEL SISTEMA DE PASES Y WHATSAPP ---
+        // --- LÓGICA DEL SISTEMA DE PASES NOMINALES (INVYTIA) ---
         let pasesAsignados = 0;
         let nombreInvitado = "Invitado Especial";
+        let isNominalSystem = false;
         const urlParams = new URLSearchParams(window.location.search);
-        
-        // El número proporcionado
         const currentPhoneNumber = "527225461495"; 
 
-        // Base de datos de ejemplo (modificable para Invytia)
-        const dbInvitados = {
-            "1": { nombre: "Familia Ejemplo", pases: 4 },
-        };
+        // Base de datos de invitados generada desde tu Excel
+        const dbInvitados = {"1": {"nombre": "Familia ESTRADA GALICIA", "pases": 4, "invitados": ["GRECIA RENATA ESTRADA CASTILLO", "GUSTAVO ALEXIS ESTRADA CASTILLO", "JESSICA YIRETH CASTILLO NOLASCO", "NICOL ESTRADA CASTILLO"]}, "5": {"nombre": "Familia CASTILLO NOLASCO", "pases": 2, "invitados": ["ABRAHAM  CASTILLO TORRES", "MARIA TERESA NOLASCO MARIN"]}, "7": {"nombre": "GENOVEVA TORRES RODRIGUEZ", "pases": 1, "invitados": ["GENOVEVA TORRES RODRIGUEZ"]}, "8": {"nombre": "Familia CASTILLOVIRRUETA", "pases": 4, "invitados": ["MOISES ABRAHAM CASTILLO NOLASCO", "JESSICA ITZEL VIRRUETAVAZQUEZ", "NATALIA CAMILA CASTILLO VIRRUETA", "SANTIAGO CASTILLO VIRRUETA"]}, "12": {"nombre": "Familia ESTRADA GALICIA", "pases": 3, "invitados": ["RIGOBERTO GUSTAVO ESTRADA ANTONIO", "YANET BEATRIZ GALICIA MANJARREZ", "XIMENA ESTRADA GALICIA"]}, "15": {"nombre": "Familia ESTRADA GALICIA", "pases": 2, "invitados": ["NOEMI BEATRIZ ESTRADA GALICIA", "KEVIN YAEL GARCIA ALCANTARA"]}, "17": {"nombre": "ESPERANZA MICAELA MANJARREZ HERNANDEZ", "pases": 1, "invitados": ["ESPERANZA MICAELA MANJARREZ HERNANDEZ"]}, "18": {"nombre": "Familia HERNANDEZ GALICIA", "pases": 5, "invitados": ["HUGO HERNANDEZ VAZQUEZ", "MARIA DE JESUS GALICIA MANJARREZ", "KEVIN HERNANDEZ GALICIA", "JENNIFER HERNANDEZ GALICIA", "HUGO HERNANDEZ GALICIA"]}, "23": {"nombre": "Familia ROJAS GALICIA", "pases": 5, "invitados": ["JAIME ROJAS", "CAROLINE GALICIA  HERNANDEZ", "JAIME ROJAS GALICIA", "BRANDON ROJAS GALICIA", "DIEGO ROJAS GALICIA"]}, "28": {"nombre": "Familia MARTINEZ GALICIA", "pases": 4, "invitados": ["JONATHAN MARTINEZ MAYA", "ADRIANA BERENICE GALICIA MANJARREZ", "SANTIAGO MARTINEZ GALICIA", "GAEL MARTINEZ GALICIA"]}, "32": {"nombre": "Familia GALICIA MARTINEZ", "pases": 2, "invitados": ["OMAR GALICIA MARTINEZ", "NELLY ALEJANDRA GALICIA MARTINEZ"]}, "34": {"nombre": "Familia VILLA ANTONIO", "pases": 2, "invitados": ["ROSA MARIA ANTONIO BECERRIL", "FLORENCIO SANCHEZ VILLA"]}, "36": {"nombre": "Familia RAMIREZ CASTILLO", "pases": 3, "invitados": ["JOSE OMAR RAMIREZ JARQUIN", "SILVIA CASTILLO TORRES", "OMAR RAMIREZ CASTILLO"]}, "39": {"nombre": "Familia UGALDE CASTILLO", "pases": 4, "invitados": ["LEONARDO UGALDE RODRIGUEZ", "LETICIA CASTILLO TORRES", "LEONARDO MAURICIO UGALDE CASTILLO", "CRISTOPHER UGALDE CASTILLO"]}, "43": {"nombre": "Familia CASTILLO CECILIO", "pases": 3, "invitados": ["JOAQUIN CASTILLO TORRES", "CRISTINA CECILIO VALDEZ", "MARIA FERNANDA CECILIO VALDEZ"]}, "46": {"nombre": "Familia GARCIA UGALDE", "pases": 3, "invitados": ["DANIEL GARCIA COVARRUBIAS", "XIMENA UGALDE CASTILLO", "FRANCO GARCIA UGALDE"]}, "49": {"nombre": "Familia MARTINEZ CASTILLO", "pases": 3, "invitados": ["JORGE MARTINEZ DIONICIO", "MARIBEL CASTILLO LOPEZ", "NATALIA MARTINEZ CASTILLO"]}, "52": {"nombre": "Familia ALEJANDRA CASTILLO LOPEZ", "pases": 3, "invitados": ["ALEJANDRA CASTILLO LOPEZ", "VALERIA CASTILLO", "MELISA CASTILLO"]}, "55": {"nombre": "Familia VIRRUETA VAZQUEZ", "pases": 2, "invitados": ["DAVID VIRRUETA MALPICA", "FANNY VAZQUEZ"]}, "57": {"nombre": "Familia OSORNIO VIRRUETA", "pases": 5, "invitados": ["LUIS RENE OSORNIO DIAZ", "LIZ VIRRUETAVAZQUEZ", "IKER OSORNIO VIRRUETA", "ALLISON OSORNIO VIRRUETA", "ISABELLA OSORNIO VIRRUETA"]}, "62": {"nombre": "Familia ESCAMILLA RAMIREZ", "pases": 4, "invitados": ["PABLO ESCAMILLA PANTALEON", "ANDREA RAMIREZ CASTILLO", "AZUL ESCAMILLA RAMIREZ", "PABLO ESCAMILLA RAMIREZ"]}, "66": {"nombre": "Familia OLVERA SANCHEZ", "pases": 2, "invitados": ["DANIEL OLVERA REYES", "DIANA LAURA SANCHEZ PEREZ"]}, "68": {"nombre": "Familia LOPEZ DURAN", "pases": 2, "invitados": ["OMAR YAHIR LOPEZ RICO", "ANA KAREN JAZMIN DURAN"]}, "70": {"nombre": "Familia JIMENEZ  HERNANDEZ", "pases": 2, "invitados": ["MOISES MANUEL JIMENEZ  HERNANDEZ", "IVAN HERNANDEZ"]}, "72": {"nombre": "ALEJANDRO ROMERO DE LA CRUZ", "pases": 1, "invitados": ["ALEJANDRO ROMERO DE LA CRUZ"]}, "73": {"nombre": "ARIEL AIZEN FLORES VISENCIO", "pases": 1, "invitados": ["ARIEL AIZEN FLORES VISENCIO"]}, "74": {"nombre": "Familia JOSE GERARDO SANTOS MONZALVO", "pases": 2, "invitados": ["JOSE GERARDO SANTOS MONZALVO", "LIZANIA"]}, "76": {"nombre": "JUAN CARLOS SALCEDO", "pases": 1, "invitados": ["JUAN CARLOS SALCEDO"]}, "77": {"nombre": "Familia LILIANA HERNANDEZ OSORIO", "pases": 2, "invitados": ["LILIANA HERNANDEZ OSORIO", "EDUARDO"]}, "79": {"nombre": "Familia MARTINEZ", "pases": 2, "invitados": ["ALFREDO MARTINEZ BENITEZ", "MARICELA PIÑA ZEPEDA"]}, "81": {"nombre": "FRIDA ROMINA DE JESUS BARRIOS", "pases": 1, "invitados": ["FRIDA ROMINA DE JESUS BARRIOS"]}, "82": {"nombre": "SARAH ISABELLA MENESES CASTILLO", "pases": 1, "invitados": ["SARAH ISABELLA MENESES CASTILLO"]}, "83": {"nombre": "SARAH NOEMY OSORIA VÁZQUEZ", "pases": 1, "invitados": ["SARAH NOEMY OSORIA VÁZQUEZ"]}, "84": {"nombre": "CHRISTIAN ROSALES CARDENAS", "pases": 1, "invitados": ["CHRISTIAN ROSALES CARDENAS"]}, "85": {"nombre": "IKER MARTÍNEZ REYES", "pases": 1, "invitados": ["IKER MARTÍNEZ REYES"]}, "86": {"nombre": "AXEL MIJAIL UTRERA ARREDONDO", "pases": 1, "invitados": ["AXEL MIJAIL UTRERA ARREDONDO"]}, "87": {"nombre": "IAN ALEJANDRO LÓPEZ HERNÁNDEZ", "pases": 1, "invitados": ["IAN ALEJANDRO LÓPEZ HERNÁNDEZ"]}, "88": {"nombre": "JESÚS NERI DÁVILA", "pases": 1, "invitados": ["JESÚS NERI DÁVILA"]}, "89": {"nombre": "SANTIAGO GUTIERREZ GARCIA", "pases": 1, "invitados": ["SANTIAGO GUTIERREZ GARCIA"]}, "90": {"nombre": "LUCERO HERNÁNDEZ HERNÁNDEZ", "pases": 1, "invitados": ["LUCERO HERNÁNDEZ HERNÁNDEZ"]}, "91": {"nombre": "NIDIA SOFÍA OSORIA VAZQUEZ", "pases": 1, "invitados": ["NIDIA SOFÍA OSORIA VAZQUEZ"]}, "92": {"nombre": "EMMANUEL SOLIS GONZÁLEZ", "pases": 1, "invitados": ["EMMANUEL SOLIS GONZÁLEZ"]}, "93": {"nombre": "OSCAR DAVID RODRÍGUEZ MARTÍNEZ", "pases": 1, "invitados": ["OSCAR DAVID RODRÍGUEZ MARTÍNEZ"]}, "94": {"nombre": "Familia MARTINEZ HERNANDEZ", "pases": 4, "invitados": ["ARACELI HERNANDEZ", "NOE MARTINEZ", "DANIA HERNANDEZ MARTINEZ", "BELEN HERNANDEZ MARTINEZ"]}, "98": {"nombre": "Familia NOLASCO", "pases": 3, "invitados": ["YOLANDA NOLASCO", "MAX ESQUIVEL NOLASCO", "GABRIEL ESQUIVEL"]}};
 
         let parametroId = urlParams.get('id');
         let parametroPases = urlParams.get('p') || urlParams.get('pases');
 
+        const inputName = document.getElementById("rsvp-name");
+        const rsvpGenericStatusContainer = document.getElementById("rsvp-generic-status-container");
+        const rsvpGenericGuestsContainer = document.getElementById("rsvp-generic-guests-container");
+        const rsvpDynamicContainer = document.getElementById("rsvp-dynamic-guests");
+        const checkboxesContainer = document.getElementById("checkboxes-container");
+
         if (parametroId && dbInvitados[parametroId]) {
+            isNominalSystem = true;
             pasesAsignados = dbInvitados[parametroId].pases;
             nombreInvitado = dbInvitados[parametroId].nombre;
-            const inputName = document.getElementById("rsvp-name");
+            const invitadosNominales = dbInvitados[parametroId].invitados;
+            
+            // Bloqueamos el campo de nombre para que no se edite
             inputName.value = nombreInvitado;
             inputName.disabled = true;
+
+            // Ocultamos los selects genéricos
+            rsvpGenericStatusContainer.style.display = 'none';
+            rsvpGenericGuestsContainer.style.display = 'none';
+
+            // Mostramos los cuadritos (checkboxes) dinámicos
+            rsvpDynamicContainer.style.display = 'block';
+            
+            invitadosNominales.forEach((nombreInv) => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = nombreInv;
+                checkbox.checked = true; // Empiezan todos confirmados por defecto
+                
+                const span = document.createElement('span');
+                span.innerText = nombreInv;
+                
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                checkboxesContainer.appendChild(label);
+            });
+
         } else if (parametroPases && !isNaN(parametroPases)) {
             pasesAsignados = parseInt(parametroPases);
         } else {
-            pasesAsignados = 10; // Fallback
+            pasesAsignados = 10; // Fallback para usuarios sin enlace nominal
         }
 
-        // Mostrar boleto si hay pases
+        // Mostrar boleto de abordar solo si hay pases detectados (nominal o parámetro)
         if (pasesAsignados > 0 && (parametroId || parametroPases)) {
             const pasesSection = document.getElementById('pases-section');
             if (pasesSection) {
@@ -698,7 +756,7 @@
             }
         }
 
-        // Dropdown de invitados dinámico
+        // Dropdown de invitados dinámico para los enlaces sin ID Nominal
         const rsvpStatus = document.getElementById("rsvp-status");
         const rsvpGuests = document.getElementById("rsvp-guests");
 
@@ -718,24 +776,52 @@
         // --- ENVÍO DE ASISTENCIA A WHATSAPP ---
         function sendRSVP() {
             const name = document.getElementById("rsvp-name").value.trim();
-            const status = document.getElementById("rsvp-status").value;
-            const guests = document.getElementById("rsvp-guests").value;
+            let message = "";
             
-            if (name === "" || status === "") {
+            if (name === "") {
                 alert("Por favor, completa tus datos para el Check-In.");
                 return;
             }
-            if (status === "yes" && guests === "") {
-                alert("Por favor, indica cuántos pasajeros abordarán.");
-                return;
+
+            if (isNominalSystem) {
+                // Lógica de WhatsApp para casillas Nominales
+                const checkboxes = checkboxesContainer.querySelectorAll('input[type="checkbox"]');
+                const selectedGuests = [];
+                
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        selectedGuests.push(cb.value);
+                    }
+                });
+
+                if (selectedGuests.length === 0) {
+                    message = encodeURIComponent(`¡Hola! Soy de la ${name}. Lamentablemente no nos será posible asistir a los XV años de Grecia Renata. Agradecemos mucho la invitación.`);
+                } else {
+                    const pasajerosConfirmados = selectedGuests.map(inv => `• ${inv}`).join('\n');
+                    message = encodeURIComponent(`¡Hola! Soy de la ${name}. Confirmamos con gusto nuestra asistencia a los XV años de Grecia Renata.\n\nPasajeros confirmados:\n${pasajerosConfirmados}`);
+                }
+                
+            } else {
+                // Lógica de WhatsApp normal genérica
+                const status = document.getElementById("rsvp-status").value;
+                const guests = document.getElementById("rsvp-guests").value;
+
+                if (status === "") {
+                    alert("Por favor, selecciona si asistirás.");
+                    return;
+                }
+                if (status === "yes" && guests === "") {
+                    alert("Por favor, indica cuántos pasajeros abordarán.");
+                    return;
+                }
+
+                if (status === "yes") {
+                    message = encodeURIComponent(`¡Hola! Soy ${name}. Sí, confirmo con gusto mi asistencia a los XV años de Grecia Renata. Seremos ${guests} persona(s) en total.`);
+                } else {
+                    message = encodeURIComponent(`¡Hola! Soy ${name}. Lamentablemente no me será posible asistir a los XV años de Grecia Renata. Agradezco mucho la invitación.`);
+                }
             }
 
-            let message = "";
-            if (status === "yes") {
-                message = encodeURIComponent(`¡Hola! Soy ${name}. Sí, confirmo con gusto mi asistencia a los XV años de Grecia Renata. Seremos ${guests} persona(s) en total.`);
-            } else {
-                message = encodeURIComponent(`¡Hola! Soy ${name}. Lamentablemente no me será posible asistir a los XV años de Grecia Renata. Agradezco mucho la invitación.`);
-            }
             window.open(`https://wa.me/${currentPhoneNumber}?text=${message}`, '_blank');
         }
 
